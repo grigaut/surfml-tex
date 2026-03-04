@@ -1,0 +1,46 @@
+\ProvidesPackage{preamble}
+% Preamble ------------------------------------------------
+\PassOptionsToPackage{svgnames}{xcolor}
+% Page organization ---------------------------------------
+% \usepackage[a4paper]{geometry}
+% Show Frame ----------------------------------------------
+% \usepackage{showframe}
+% Text related --------------------------------------------
+\usepackage{microtype}
+\usepackage{parskip}
+% Maths ---------------------------------------------------
+\usepackage{amsmath, amssymb, amsfonts, xparse, xspace, xstring, amsfonts, mathtools, unicode-math, dsfont, empheq}
+\DeclareMathAlphabet{\mathbb}{U}{msb}{m}{n}
+% Units ---------------------------------------------------
+\usepackage{siunitx}
+% Images --------------------------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+% Tables --------------------------------------------------
+\usepackage{multirow} 
+\usepackage{booktabs}
+% Tikz ----------------------------------------------------
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes, arrows.meta, calc}
+% Colored hyperlinks --------------------------------------
+% \usepackage[svgnames]{xcolor}
+\definecolor{customred}{RGB}{191, 78, 48}
+\definecolor{customblue}{RGB}{67, 146, 241}
+\definecolor{customurlcolor}{RGB}{0, 0, 238}
+\usepackage[breaklinks]{hyperref}
+\hypersetup{
+    colorlinks=true, % Triggers colored links
+    linkcolor=customred, % internal links colors
+    citecolor=customblue, % citations colors
+    urlcolor=customurlcolor, % URL colors
+    pdftitle=Notes,
+    pdfauthor={Gaétan RIGAUT}, % author
+    pdfcreator={Gaétan RIGAUT}, % creator
+    pdfproducer={Gaétan RIGAUT}, % producer
+}
+\usepackage{cleveref}
+% TODOS ---------------------------------------------------
+\usepackage[textsize=footnotesize, textwidth=2cm]{todonotes}
+%\usepackage[textsize=footnotesize, textwidth=2cm, disable]{todonotes}
+% Bibliography --------------------------------------------
+\usepackage[backend=biber, style=apa, natbib=true,backref=true,backrefstyle=three]{biblatex}
