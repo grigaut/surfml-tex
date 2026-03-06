@@ -2,6 +2,10 @@
 
 % Preamble ------------------------------------------------
 \usepackage{preamble}
+% Macros --------------------------------------------------
+\usepackage{macros}
+% Symbols --------------------------------------------------
+\usepackage{symbols}
 % Images --------------------------------------------------
 \graphicspath{{assets/figures/}}
 % Bibliography --------------------------------------------
@@ -9,7 +13,7 @@
 
 \begin{document}
 
-\title{Surface reduced gravity }
+\title{Surface reduced gravity}
 \author{Gaétan Rigaut}
 
 \abstract{}
@@ -17,6 +21,70 @@
 \maketitle
 
 \section{Introduction}
+
+In physical oceanography, the majority of available data is satellite-acquired\todo{cite NADIR, altimeters..}. The recent launch of the Surface Water and Ocean Topography (SWOT) mission~\parencite{fu2024} has paved the way for sea surface reconstruction with unprecedented resolution. However, due to the shape of its orbit, this satellite covers the entire surface of the globe in 21 days. Although most parts of the globe are visited multiple times within this 21d-period, many gaps remain in the collected data. The reconstruction of sea-surface dynamics through partial observation has been investigated for a long time. In the late 1980s, some physically-motivated methods were developed~\parencite{hurlburt1986,mey1987,holland1989,haines1991,cong1995,cong1998}. In the early 2000s, purely statistical methods emerged with the optimal interpolation~\parencite{rienecker1991,traon1998} which lead to the DUACS product\todo{cite DUACS} which, as of today, remain the main provider of real-time assimilated gridded ocean product\todo{Verify this}. As data assimilation techniques were applied to the ocean system, new reconstruction methods emerged from the use Kalman filter\todo{Refs}, Ensemble Kalman Filters\todo{refs}. \todo{Introduce QG before} However, to gather the most from theoretical models of ocean surface dynamics, the idea of dynamical interpolation made its way into people's mind~\parencite{ubelmann2015,ubelmann2016}. The introduction of tunable external forcing into the reduced gravity QG model~\parencite{leguillou2023,leguillou2025} has proven the capabilities of such simplified models to approach the rich and complex dynamics of the ocean surface. However, the reduced gravity QG framework is built onto the approximation that the flow is at rest below the ocean surface. Such simplification is made to remove the contribution from the deep ocean to the surface dynamics and relies on the truncation of the actual multilayer QG equations.
+
+\section{The multilayer QG theory}
+
+Denoting $\vect{\pv} = \transpose{\begin{bmatrix} {\pv}_1, \dots, {\pv}_N \end{bmatrix}}$ the $N$-layer potential vorticity (PV) vector, and $\vect{\sf} = \transpose{\begin{bmatrix} {\sf}_1, \dots, {\sf}_N \end{bmatrix}}$ its stream function counterpart, the multilayer QG equations (in the absence of external forcing) are~\parencite{charney1953}
+
+\begin{subequations}
+    \begin{align}
+        \vect{\pv} = \lap \vect{\sf} - f_0^2 \mat{A} \vect{\sf}, \label{def:pv-ml}\\
+        \pdvt{\vect{\pv}} + J\left(\vect{\sf}, \vect{\pv}\right) = 0, \label{def:pv-adv}
+    \end{align}
+\end{subequations}
+
+where the stretching matrix $\mat{A}$ read
+
+\begin{equation}
+    \mat{A} = \begin{bmatrix}
+            \frac{1}{H_1 g_1} + \frac{1}{H_1 g_2} & -\frac{1}{H_1 g_2} & \cdot & \cdot \\
+            -\frac{1}{H_2 g_2} & \frac{1}{H_2 g_2} + \frac{1}{H_2 g_3} & -\frac{1}{H_2 g_3} & \cdot \\
+            \vdots & \ddots & \ddots & \vdots \\ 
+            \cdot & \cdot & -\frac{1}{H_N g_N} & \frac{1}{H_N g_N} \\ 
+        \end{bmatrix}.
+\end{equation}
+
+In the multilayer framework~\parencite{vallis2006}, the top layer PV, $\pv_1^{ML}$ depends on the stream function from layers $1$ and $2$ as
+
+\begin{equation}\label{def:pv-top-ml}
+    \pv_1^{ML} = \lap \sf_1 - f_0^2 \frac{1}{H_1 g_1} \sf_1 - f_0^2 \frac{1}{H_1 g_2} \left(\sf_1 - \sf_2\right).
+\end{equation}
+
+The reduced gravity framework considers the sublayer to be at rest, hence $\sf_2 = 0$. The corresponding top-layer PV $\pv^{RG}$ expression yields
+
+\begin{equation}\label{def:pv-rg}
+    \pv^{RG} = \lap \sf_1 - f_0^2 \left(\frac{1}{H_1 g_1} + \frac{1}{H_1 g_2}\right) \sf_1,
+\end{equation}
+
+and it is assumed that it is advected by $\sf_1$, as $\pv_1^{ML}$ was~\cref{def:pv-adv}. Hence,
+
+\begin{equation}
+    \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) = 0.
+\end{equation}
+
+This is the formulation of the reduced gravity model which was used in the first time to perform dynamical interpolation~\parencite{ubelmann2015,ubelmann2016}.
+
+However, since
+
+\begin{equation}
+    \pv_1^{ML} = \pv^{RG} + f_0^2\frac{1}{H_1 g_2} \sf_2,
+\end{equation}
+
+the top layer advection equation can be written
+
+\begin{equation}
+    \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) = - \frac{f_0^2}{H_1 g_2} \left[\pdvt{\sf_2} + J\left(\sf_1, \sf_2\right)\right].
+\end{equation}
+
+The latter resembles the formulation of the VarDyn~\parencite{leguillou2023,leguillou2025} framework which consists in performing variational assimilation on a reduced gravity corrected by an external forcing. Denoting $\epsilon$ such forcing, the advection equation as introduced by VarDyn reads
+
+\begin{equation}
+    \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) = \epsilon.
+\end{equation}
+
+
 
 \section{Method}
 
@@ -27,5 +95,7 @@
 \subsection{Comparison to a multilayer QG}
 
 \subsection{Comparison to eNATL60}
+
+\printbibliography[heading=bibintoc]
 
 \end{document}

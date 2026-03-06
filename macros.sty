@@ -1,0 +1,93 @@
+\ProvidesPackage{macros}
+\RequirePackage{xcolor}
+\RequirePackage{xparse}
+\RequirePackage{xspace}
+\RequirePackage{amsmath}
+\RequirePackage{unicode-math}
+
+% Derivatives ---------------------------------------------
+\NewDocumentCommand{\Dt}{s g}{%
+  \def\tsymbol{t}
+  \IfBooleanTF{#1}{%
+    \ensuremath{\mathrm{D}_{\tsymbol}\IfValueT{#2}{#2}}%
+  }{%
+    \ensuremath{\frac{\mathrm{D}\IfValueT{#2}{#2}}{\mathrm{D}{\tsymbol}}}%
+  }%
+}
+
+\NewDocumentCommand{\pdv}{s m g}{%
+    \IfBooleanTF{#1}
+    { % starred: partial with subscript
+        \IfNoValueTF{#3}
+        {\ensuremath{\partial_{{#2}}}}               % no arg, just \partial_{t}
+        {\ensuremath{\partial_{{#2}} #3}}             % with arg, \partial_t something
+    }
+    { % unstarred: fraction
+        \IfNoValueTF{#3}
+        {\ensuremath{\frac{\partial}{\partial {#2}}}}    % no arg: \partial / \partial t
+        {\ensuremath{\frac{\partial #3}{\partial {#2}}}} % with arg: \partial something / \partial t
+    }%
+}
+
+\NewDocumentCommand{\pdvt}{s g}{%
+    % Partial derivative with respect to time
+    \IfBooleanTF{#1}
+        {\pdv*{t}{#2}}
+        {\pdv{t}{#2}}%
+}
+
+\NewDocumentCommand{\pdvx}{s g}{%
+    % Partial derivative with respect to time
+    \IfBooleanTF{#1}
+        {\pdv*{x}{#2}}
+        {\pdv{x}{#2}}%
+}
+
+\NewDocumentCommand{\pdvy}{s g}{%
+    % Partial derivative with respect to time
+    \IfBooleanTF{#1}
+        {\pdv*{y}{#2}}
+        {\pdv{y}{#2}}%
+}
+
+% Operators -----------------------------------------------
+
+\NewDocumentCommand{\lap}{}{%
+    \ensuremath{\mathop{\Delta}}%
+}
+\NewDocumentCommand{\curl}{}{%
+    \ensuremath{\grad \times}%
+}
+\NewDocumentCommand{\divergence}{}{%
+    \ensuremath{\grad \cdot}%
+}
+\NewDocumentCommand{\gradh}{}{%
+    \def\symbol{\symbf{\nabla}_H}
+    \ensuremath{\mathop{\symbol}\nolimits}%
+}
+\NewDocumentCommand{\gradperp}{}{%
+    \def\symbol{\symbf{\nabla}^{\perp}}
+    \ensuremath{\mathop{\symbol}\nolimits}%
+}
+\NewDocumentCommand{\gradhperp}{}{%
+    \def\symbol{\symbf{\nabla}^{\perp}_H}
+    \ensuremath{\mathop{\symbol}\nolimits}%
+}
+
+
+\NewDocumentCommand{\vect}{m}{%
+  \ensuremath{\underline{\smash{#1}}}
+}
+\NewDocumentCommand{\mat}{m}{%
+  % \ensuremath{\mathsf{#1}}
+  \ifcat\noexpand#1\relax
+    % Argument starts with a control sequence (\Gamma, \alpha...)
+    #1%
+  \else
+    \mathsf{#1}%
+  \fi
+}
+
+\NewDocumentCommand{\transpose}{m}{%
+  \ensuremath{{#1}^{\intercal}}
+}

@@ -1,0 +1,14 @@
+\ProvidesPackage{symbols}
+\RequirePackage{xparse}
+\RequirePackage{xstring}
+\RequirePackage{amsmath}
+\RequirePackage{macros}
+
+\RenewDocumentCommand{\sf}{}{%
+    \def\symbol{\psi}%
+    \ensuremath{\symbol}%
+}
+\NewDocumentCommand{\pv}{}{%
+    \def\symbol{q}%
+    \ensuremath{\symbol}%
+}
