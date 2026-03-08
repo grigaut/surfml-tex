@@ -49,13 +49,13 @@ where the stretching matrix $\mat{A}$ read
 In the multilayer framework~\parencite{vallis2006}, the top layer PV, $\pv_1^{ML}$ depends on the stream function from layers $1$ and $2$ as
 
 \begin{equation}\label{def:pv-top-ml}
-    \pv_1^{ML} = \lap \sf_1 - f_0^2 \frac{1}{H_1 g_1} \sf_1 - f_0^2 \frac{1}{H_1 g_2} \left(\sf_1 - \sf_2\right).
+    \pv_1^{ML} = \lap{\sf_1} - \frac{f_0^2}{H_1 g_1} \sf_1 - \frac{f_0^2}{H_1 g_2} \left(\sf_1 - \sf_2\right).
 \end{equation}
 
 The reduced gravity framework considers the sublayer to be at rest, hence $\sf_2 = 0$. The corresponding top-layer PV $\pv^{RG}$ expression yields
 
 \begin{equation}\label{def:pv-rg}
-    \pv^{RG} = \lap \sf_1 - f_0^2 \left(\frac{1}{H_1 g_1} + \frac{1}{H_1 g_2}\right) \sf_1,
+    \pv^{RG} = \lap{\sf_1} - f_0^2 \left(\frac{1}{H_1 g_1} + \frac{1}{H_1 g_2}\right) \sf_1,
 \end{equation}
 
 and it is assumed that it is advected by $\sf_1$, as $\pv_1^{ML}$ was~\cref{def:pv-adv}. Hence,
@@ -69,7 +69,7 @@ This is the formulation of the reduced gravity model which was used in the first
 However, since
 
 \begin{equation}
-    \pv_1^{ML} = \pv^{RG} + f_0^2\frac{1}{H_1 g_2} \sf_2,
+    \pv_1^{ML} = \pv^{RG} + \frac{f_0^2}{H_1 g_2} \sf_2,
 \end{equation}
 
 the top layer advection equation can be written
@@ -85,8 +85,44 @@ The latter resembles the formulation of the VarDyn~\parencite{leguillou2023,legu
 \end{equation}
 
 
-
 \section{Method}
+
+\subsection{Variational assimilation}
+
+We consider a non-linear, time-evolving system whose state at time $t$ is given by $X\left(t\right)$. The observation operator $\mathcal{H}$ allows  gathering an observation $y\left(t\right) = \mathcal{H}\left(X\left(t\right)\right)$ on the system state at time $t$. We introduce a simplified model $\mathcal{M}$, which provides a proxy $x\left(t\right) = \mathcal{M}\left(t, x^0, x^{BC}, \theta\right)$ on $X\left(t\right)$ at time $t$, given initial ($x^0$) and boundary conditions $x^{BC}$ and a set of parameters $\theta$. Observations draw from $X$ can be compared to their counterpart generated using $\mathcal{H}\circ\mathcal{M}$. For example, for a given time $t$, $y\left(t\right) = \mathcal{H}\left(X\left(t\right)\right)$ is compared $\mathcal{H}\left(\mathcal{M}\left(x^0, x^{BC}, \theta | t\right)\right)$. Give a set of observations ${\left(y_i\right)}_{i \in \{1, \dots, N_{\mathrm{obs}}\}}$ evaluated at times ${\left(t_i\right)}_{i \in \{1, \dots, N_{\mathrm{obs}}\}}$, the performance of $\mathcal{M}$ in reproducing the evolution of the system can be evaluated by the following cost function
+
+\begin{equation}
+    \mathcal{C}\left(x^0, x^{BC}, \theta\right) = \sum_{i=1}^{N_{\mathrm{obs}}}\mathrm{RMSE}_{\mat{C}}\left[y\left(t_i\right), \mathcal{H}\left(\mathcal{M}\left(x^0, x^{BC}, \theta | t_i\right)\right)\right],
+\end{equation}
+
+where $\mat{C}$ is a covariance matrix and the (normalized) Root Mean Square Error ($\mathrm{RMSE}$) between a field $\tilde{\chi}$ and a reference field $\chi$ is defined by
+
+\begin{equation}
+    \mathrm{RMSE}_{\mat{C}}\left(\chi, \tilde{\chi}\right) = \sqrt{\frac{{\lVert \tilde{\chi} - \chi \rVert}_{\mat{C}}^2}{{\lVert \chi \rVert}_{\mat{C}}^2}}.
+\end{equation}
+
+Variational data assimilation resumes to finding the optimal values for both the initial and boundary conditions and the parameter in order to reduce the value the previously defined cost function. Hereafter, we will use fixed initial and boundary conditions hence only focusing on finding optimal values for the parameters in order to improve the reconstruction capabilities of the model. The cost function and model will then be written as functional of $\theta$ only. Additionally, to ensure well-posedness of the optimization problem, we often add a so-called ``background term'' to the cost function. This background usually penalizes the deviation of $\theta$ from an earlier guess of its value, ${\theta}_B$. The regularized cost function then rewrites
+
+
+\begin{equation}
+    \mathcal{C}\left(\theta\right) = \sum_{i=1}^{N_{\mathrm{obs}}}\mathrm{RMSE}_{\mat{C}}\left[y\left(t_i\right), \mathcal{H}\left(\mathcal{M}\left(\theta | t_i\right)\right)\right] + {\lVert \theta - \theta_B \rVert}^2_{\mat{B}},
+\end{equation}
+
+where $\mat{B}$ is a covariance matrix.
+
+\subsection{Corrected reduced-gravity model}
+
+We wish to restore the proximity with the multilayer QG framework by correcting a reduced gravity model through the introduction of a tunable parameter, $\tilde{\sf}_2$, representing a proxy for $\sf_2$. The advection equation of our reduced gravity model then becomes
+
+\begin{equation}
+    \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) = - \frac{f_0^2}{H_1 g_2} \left[\pdvt{\tilde{\sf}_2} + J\left(\sf_1, \tilde{\sf}_2\right)\right].
+\end{equation}
+
+Additionally, having a proxy for $\sf_2$ allows computing a proxy for the sublayer PV, $\tilde{\pv}_2$ through the truncation of the multilayer PV definition in the layer 2
+
+\begin{equation}
+    \tilde{\pv}_2 = \lap{\tilde{\sf}_2} - \frac{f_0^2}{H_2 g_2}\left(\tilde{\sf}_2 - \sf_1\right).
+\end{equation}
 
 \section{Experiment}
 
