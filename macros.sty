@@ -61,6 +61,10 @@
 \NewDocumentCommand{\divergence}{}{%
     \ensuremath{\grad \cdot}%
 }
+\NewDocumentCommand{\grad}{}{%
+    \def\symbol{\symbf{\nabla}}
+    \ensuremath{\mathop{\symbol}\nolimits}%
+}
 \NewDocumentCommand{\gradh}{}{%
     \def\symbol{\symbf{\nabla}_H}
     \ensuremath{\mathop{\symbol}\nolimits}%
