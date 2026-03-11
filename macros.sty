@@ -95,3 +95,11 @@
 \NewDocumentCommand{\transpose}{m}{%
   \ensuremath{{#1}^{\intercal}}
 }
+
+\NewDocumentCommand{\loss}{g}{%
+    \def\symbol{\mathcal{J}}
+    \IfNoValueTF{#1}
+    {\ensuremath{\symbol}}    % no arg: \partial / \partial t
+    {\ensuremath{\symbol_{\mathrm{#1}}}} % with arg: \partial something / \partial t
+}
+
