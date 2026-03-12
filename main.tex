@@ -31,16 +31,26 @@ Using a RG model,~\cite{ubelmann2015} presented the so-called dynamical interpol
 
 \section{The multilayer QG theory}
 
-Denoting $\vect{\pv} = \transpose{\begin{bmatrix} {\pv}_1, \dots, {\pv}_N \end{bmatrix}}$ the $N$-layer potential vorticity (PV) vector, and $\vect{\sf} = \transpose{\begin{bmatrix} {\sf}_1, \dots, {\sf}_N \end{bmatrix}}$ its stream function counterpart, the free-surface multilayer QG equations (in the absence of external forcing) are~\parencite{charney1953}
+Multilayer QG is obtained by stacking layers of fluid with constant vertical properties~\parencite{pedlosky1987,vallis2006}. In the following we will recall these equations in a $N$-layer fluid. Using $\vect{\cdot}$ to represent layered fields ($\vect{\chi}= \transpose{\begin{bmatrix}\chi_1, \dots, \chi_N\end{bmatrix}}$), we denote
+
+\begin{itemize}
+    \item $\vect{\rho}$ the reference layer densities,
+    \item $\vect{H}$ the reference layer thickness,
+    \item $\vect{g}$ the reduced gravities ($g_i = g\left(\rho_{i}-\rho{i-1}\right)/\rho_1$, with the convention $g_1 = g$),
+    \item $\vect{\sf}$ the stream function vector
+    \item $\vect{\pv}$ the potential vorticity (PV) vector
+\end{itemize}
+\bigskip
+Introducing the horizontal gradient $\grad = \transpose{\begin{bmatrix} \pdvx & \pdvy \end{bmatrix}}$ along with the perpendicular horizontal gradient $\gradperp = \transpose{\begin{bmatrix} -\pdvy & \pdvx \end{bmatrix}}$, the free-surface multilayer QG equations (in the absence of external forcing) read
 
 \begin{subequations}
     \begin{align}
         \vect{\pv} = \lap \vect{\sf} - f_0^2 \mat{A} \vect{\sf}, \label{def:pv-ml}\\
-        \pdvt{\vect{\pv}} + \gradperp \vect{\sf} \cdot \grad \vect{\pv} = 0, \label{def:pv-adv}
+        \pdvt{\vect{\pv}} + \gradperp \vect{\sf} \cdot \grad \vect{\pv} = 0\label{def:pv-adv},
     \end{align}
 \end{subequations}
 
-where $\grad = \transpose{\begin{bmatrix} \pdvx & \pdvy \end{bmatrix}}$ is the horizontal gradient and $\gradperp = \transpose{\begin{bmatrix} -\pdvy & \pdvx \end{bmatrix}}$ the perpendicular horizontal gradient. We also have introduced the stretching matrix $\mat{A}$, given by
+where the stretching matrix $\mat{A}$, is given by
 
 \begin{equation}
     \mat{A} = \begin{bmatrix}
@@ -51,10 +61,10 @@ where $\grad = \transpose{\begin{bmatrix} \pdvx & \pdvy \end{bmatrix}}$ is the h
         \end{bmatrix}.
 \end{equation}
 
-In the multilayer framework~\parencite{vallis2006}, the top layer PV, $\pv_1^{ML}$ depends on the stream function from layers $1$ and $2$ as
+In the multilayer framework~\parencite{vallis2006}, the top layer PV, $\pv_1$ depends on the stream function from layers $1$ and $2$ as
 
 \begin{equation}\label{def:pv-top-ml}
-    \pv_1^{ML} = \lap{\sf_1} - \frac{f_0^2}{H_1 g_1} \sf_1 - \frac{f_0^2}{H_1 g_2} \left(\sf_1 - \sf_2\right).
+    \pv_1 = \lap{\sf_1} - \frac{f_0^2}{H_1 g_1} \sf_1 - \frac{f_0^2}{H_1 g_2} \left(\sf_1 - \sf_2\right).
 \end{equation}
 
 The RG framework considers the sublayer to be at rest, hence $\sf_2 = 0$. The corresponding top-layer PV $\pv^{RG}$ expression yields
@@ -63,7 +73,7 @@ The RG framework considers the sublayer to be at rest, hence $\sf_2 = 0$. The co
     \pv^{RG} = \lap{\sf_1} - f_0^2 \left(\frac{1}{H_1 g_1} + \frac{1}{H_1 g_2}\right) \sf_1,
 \end{equation}
 
-and it is assumed that it is advected by $\sf_1$, as $\pv_1^{ML}$ was~\cref{def:pv-adv}. Hence,
+which is advected by $\sf_1$, hence,
 
 \begin{equation}
     \pdvt{\pv^{RG}} +  \gradperp{\sf_1}\cdot \grad{\pv^{RG}} = 0.
@@ -93,7 +103,7 @@ where the (normalized) Mean Square Error ($\mathrm{MSE}$) between a field $\chi$
     \mathrm{MSE}\left(\chi_{\mathrm{ref}}, \chi\right) = \frac{{\lVert \chi - \chi_{\mathrm{ref}} \rVert}^2}{{\lVert \chi_{\mathrm{ref}} \rVert}^2}.
 \end{equation}
 
-Variational data assimilation resumes to finding the optimal values for both the initial and boundary conditions and the parameter in order to reduce the value the previously defined observation loss function. Hereafter, we will use fixed initial and boundary conditions hence only focusing on finding optimal values for the parameters in order to improve the reconstruction capabilities of the model. The cost function and model will then be written as functional of $\theta$ only. The variational problem then resumes to finding
+Variational data assimilation consists in finding the optimal values for both the initial and boundary conditions and the parameter in order to reduce the value the previously defined observation loss function. Hereafter, we will use fixed initial and boundary conditions hence only focusing on finding optimal values for the parameters in order to improve the reconstruction capabilities of the model. The cost function and model will then be written as functional of $\theta$ only. The variational problem then reduces to finding
 
 \begin{equation}
     \theta^\star = \arg \min_{\theta}\loss{obs}\left(\theta\right).
@@ -110,8 +120,6 @@ the loss function rewrites
 \begin{equation}
     \loss\left(\theta\right) = \loss{obs}\left(\theta\right) + \loss{reg}\left(\theta\right).
 \end{equation}
-
-where the hyperparameter $\gamma$ controls the strength of the regularization.
 
 
 \subsection{The forward model}
@@ -141,6 +149,33 @@ From this expression, we note that the usual RG model advection resumes to consi
 \end{equation}
 
 The numerical code used for the actual implementation of such model is based on Python implementation of a QG model by~\cite{thiry2024}. Since the model is implemented using Pytorch~\parencite{paszke2019}, the code is autodifferentiable thus allowing to easily compute model's gradient and perform variational assimilation.
+
+In order to keep a reasonable number of parameters for the parameterization of $\tilde{\sf}_2$, we use a reduced-order space to represent its value. To reduces the a priori knowledge we have chosen to represent the field using a parameterization that remain dynamics-agnostic. The spatio-temporal behavior of $\tilde{\sf}_2$ is prescribed through a mixture of Gaussian envelopes that remain separable in both time and space. Denoting $N_{T}$ the number of time-related envelopes and $N_{XY}$ the number of space-related envelopes at a given time $i$. For given $i \in \{1,\dots,N_T\}$ and $j \in \{1,\dots,N_{XY}\}$, we define
+
+\begin{subequations}
+    \begin{align}
+        E^T_{i}\left(t\right) & = \exp\left[-{\left(\frac{t-t_i}{\sigma_T}\right)}^2\right], \\
+        E^{XY}_{j}\left(x,y\right) & = \exp\left[-{\left(\frac{x-x_j}{\sigma_X}\right)}^2\right]\exp\left[-{\left(\frac{y-y_j}{\sigma_Y}\right)}^2\right],
+    \end{align}
+\end{subequations}
+
+where $t_i, x_j, y_j$ are the locations of the envelope centers and $\sigma_T, \sigma_X, \sigma_Y$ their standard deviation. Denoting $E^T = \sum_{i=1}^{N_T} E^T_i$ and $E^{XY} = \sum_{i=1}^{N_{XY}} E^{XY}_j$, Using these notations, the overall decomposition of $\tilde{\sf}_2$ at time $t$ and location $\left(x,y\right)$ with
+
+\begin{equation}
+    \tilde{\sf}_2\left(t,x,y\right) = \frac{\sum_{i=1}^{N_T}\sum_{j=1}^{N_{XY}}  c_{i,j} E^T_{i}\left(t\right)E^{XY}_{j}\left(x,y\right)}{E^T\left(t\right) E^{XY}\left(x,y\right)},
+\end{equation}
+
+where the ${\left(c_{i,j}\right)}_{i \in \{1, \dots, N_T\}, j \in \{1, \dots, N_{XY}\}}$ are coefficients inferred through minimization. Setting all coefficient to 0 restores the dynamics of a flow following the RG assumption and is chosen as the initial condition for the parameterization. Envelopes are regularly spaced over both time and space and their standard deviations are chosen so that consecutive envelopes cross at $\qty{-3}{\decibel}$. Hence, considering consecutive time-related (resp., space-related) envelopes to be distant from $\Delta t$ (resp., $\Delta x$ and $\Delta y$), their standard deviations are given by
+
+\begin{subequations}
+    \begin{align}
+        \sigma_T & = \frac{\Delta t}{\sqrt{2\ln{2}}}, \\
+        \sigma_X & = \frac{\Delta x}{\sqrt{2\ln{2}}}, \\
+        \sigma_Y & = \frac{\Delta y}{\sqrt{2\ln{2}}}.
+    \end{align}
+\end{subequations}
+
+Such parameterization allows representing a smooth field while enabling the emergence of some rather small scale patterns.
 
 \subsubsection{Physics-informed regularization}
 
@@ -197,17 +232,85 @@ The resulting stretching matrix is then used to compute both the advection of th
 
 \section{Experiment}
 
-As we wish to assess the performances of 
+We have considered two validation experiments. In the first one, we have set a double-gyre experiment using a three-layer QG model. Therefore, the reconstruction error from the RG model (dynamical interpolation situation) is mostly explained by the truncation of the QG equations. Within this framework, we can also assess the ability of the VarDyn model in mitigating such error and compare its performance with our error formulation. Additionally, the three-layer QG model provides the value of the actual field $\sf_2$ to which we can compare our reconstruction $\tilde{\sf}_2$ and then discuss the ability of our method to provide a proxy for the sublayer flow. Two variants of this setup have been explored. One where model parameters (reference layer depth, reduced gravity values\dots) are the same in the reference QG model and in the RG counterpart. And the other where model parameters are modified to assess the robustness of each of the models when dealing with incorrect baroclinic deformation radius. The second validation experiment uses surface fields from the eNATL60-BLB002 simulation~\parencite{brodeau2020} as the reference flow. This experiment investigate the capability of our model in reproducing a flow that present ageostrophic, complex and rich dynamical features.
+
+In both experiments, observations are drawn from the surface using an observing system simulation experiment that simulates SWOT-like sampling tracks.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.75\textwidth]{example-image-a}
+    \end{center}
+    \caption{Observation tracks}
+\end{figure}
+
+In each experiment, although the reference flow was established over a rather wide basin, we have decided to focus on subdomains when performing our reconstruction. To do so, we have enriched the original numerical code~\parencite{thiry2024} to withstand non-zero boundary conditions. The reconstructed surface flow is then characterized by the model parameters, the initial condition, the boundary conditions and the error parameterization. Since we want to test out the performances of the error parameterization, we have decided to only include the latter in the control vector. Ideal initial and boundary conditions are therefore retrieved from the surface flow of the reference simulation. However, multiple work has been conducted on using the variational assimilation framework to infer either initial, boundary conditions or both~\parencite{cong1998,zou1995,gunson1996,seiler1993,ayoub2006}, suggesting that they could be included into the control vector as well without damaging the reconstruction capabilities of the models. Since all tested framework (RG, VarDyn, SurfML) share identical initial and boundary conditions, differences in performances cannot be attributed to the shared initial and boundary conditions. It is worth emphasizing that, in each of the described setups, only the surface flow is considered to be available as a source of information when defining the initial and boundary conditions.
+
+Assimilation is conducted on 20 days-long periods. Over these periods, satellite passages are simulated and, when a track spans over the considered domain, observation loss is evaluated using the collected data. Regarding the SurfML model, regularization loss is evaluated at every time step.
 
 \section{Results}
 
 \subsection{Comparison to a multilayer QG}
+
+Parameters for all models are detailed in the following table
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|cccc}
+        \toprule
+        Parameter & \multicolumn{4}{c}{Value} \\
+        \midrule
+        $\dt$ & \multicolumn{4}{c}{$\qty{7200}{\second}$} \\
+        $\dx$ & \multicolumn{4}{c}{$\qty{10}{\kilo\meter}$} \\
+        $\dy$ & \multicolumn{4}{c}{$\qty{10}{\kilo\meter}$} \\
+        $f_0$ & \multicolumn{4}{c}{$\qty{9.375e-5}{\per\second}$} \\
+        $\beta$ & \multicolumn{4}{c}{$\qty{1.754e-11}{\per\meter\per\second}$} \\
+        \midrule
+        Parameter & QG3L & RG & VarDyn & SurfML \\
+        \midrule
+        $H_1$ & $\qty{400}{\meter}$ & $\qty{400}{\meter}$ & $\qty{293}{\meter}$ & $\qty{400}{\meter}$ \\
+        $H_2$ & $\qty{1100}{\meter}$ & . & . & $\qty{1100}{\meter}$ \\
+        $H_3$ & $\qty{2600}{\meter}$ & . & . & . \\
+        $g_1$ & $\qty{9.81}{\meter\per\second^2}$ & $\qty{0.0249}{\meter\per\second^2}$ & $\qty{0.025}{\meter\per\second^2}$ & $\qty{9.81}{\meter\per\second^2}$ \\
+        $g_2$ & $\qty{0.025}{\meter\per\second^2}$ & . & . & $\qty{0.025}{\meter\per\second^2}$ \\
+        $g_3$ & $\qty{0.0125}{\meter\per\second^2}$ & . & . & . \\
+        \bottomrule
+    \end{tabular}
+    \caption{Model parameters}\label{tab:qg3l-model-parameters}
+\end{table}
+
+VarDyn parameters have been chosen so that the one layer RG model matches the baroclinic deformation radius of a two-layer QG model. The value of this deformation radius is about \qty{29}{\kilo\meter}, similar to the one described in~\cite{leguillou2023}. The parameter of the RG model however are set so that the one-layer dynamics matches the one of the truncated QG model.
+
+Since the reference simulation is forced by wind to display a double-gyre, we also include the wind as an external forcing within the advection equations for all models, denoting $\tau = \transpose{\begin{bmatrix} \tau_x & \tau_y \end{bmatrix}}$ the wind stress tensor, the advection equation rewrites
+
+\begin{equation}
+    \pdvt{q^{RG}} + \gradperp \sf_1 \cdot \grad {\pv}^{RG} = F + \gradperp \cdot \tau
+\end{equation}
+
+where $F$ represent the additional forcing that depends on the frameworks,
+
+\begin{subequations}
+    \begin{align}
+        F_{\mathrm{RG}} & = 0, \\
+        F_{\mathrm{VarDyn}} & = \epsilon, \\
+        F_{\mathrm{SurfML}} & = \frac{-f_0^2}{H_1 g_2}\Dt{\tilde{\sf}_2}.
+    \end{align}
+\end{subequations}
+
 
 \subsubsection{Estimation of the sublayer stream function}
 
 \subsubsection{Robustness}
 
 \subsection{Comparison to eNATL60}
+
+Parameters for all models are detailed are the exact same as the ones from~\cref{tab:qg3l-model-parameters}. Since the eNATL60-BLB002 simulation only provides sea-surface-height (SSH) values, stream function must be inferred from SSH anomaly to instantiate the RG model. SSH anomaly $ SSH - <SSH>_{T,XY}$ is computed by removing the time-space average (evaluated over the 20 days period) from the SSH field. We use the Drakkar Forcing Set 5.2~\parencite{dussin2016} to retrieve the atmospheric pressure anomaly $P_{\mathrm{atm}} - <P_{atm}>_{XY}$, ($<\cdot>_{XY}$ denoting the spatial-average operator). Finally, surface stream function $\Psi$ verifies\todo{improve notations}
+
+\begin{equation}
+    \Psi = \frac{1}{f_0 \rho_0} \left( P_{atm} - <P_{atm}>_{XY} \right) + \frac{g}{f_0}\left( SSH - <SSH>_{T,XY} \right),
+\end{equation}
+
+where $\rho_0$ is the reference density for water.
+
+As the resulting stream function contain small-scale features, it is then smoothed using a Gaussian filter and then downsampled from the high-resolution, curvilinear coordinates of the eNATL60 simulation into the regular, Cartesian grid of the QG models. It is this smoothed, down-scaled field that is used for both initial and boundary conditions of the QG models. The observations however are sampled from the non-filtered yet down-scaled surface stream function field.
 
 \printbibliography[heading=bibintoc]
 
