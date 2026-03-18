@@ -250,7 +250,7 @@ In both experiments, observations are drawn from the surface using an observing 
 
 As this work focuses on introducing a new parameterization to reduce model error, we have decided to only consider such parameterization in the control vector. Indeed, since all tested frameworks (RG, VarDyn, SurfML) share identical initial and boundary conditions, differences in performances only results from model error and its correction. Ideal initial and boundary conditions are therefore retrieved from the surface flow of the reference simulation. Furthermore, the estimation of initial and boundary conditions through variational assimilation has already been widely investigated~\parencite{cong1998,zou1995,gunson1996,seiler1993,ayoub2006}, suggesting that our methodology could quite easily be adapted to a more realistic data assimilation configuration.
 
-Assimilation is conducted on 20 days-long periods. Over these periods, satellite passages are simulated and, when a track spans over the considered domain, observation loss is evaluated using the collected data. Regarding the SurfML model, regularization loss is evaluated at every time step.
+Assimilation is conducted on 20 days-long periods. Over these periods, satellite passages are simulated and, when a track spans over the considered domain, observation loss is evaluated using the collected data. Regarding the SurfML model, regularization loss is evaluated at every time step. The VarDyn regularization however, is implemented so that wavelet scales are penalized following a $\frac{-5}{3}$ law. Small scales are therefore penalized strongly than large scales.
 
 Parameters for all models are detailed in the following table
 
