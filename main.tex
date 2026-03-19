@@ -30,7 +30,7 @@ Keypoints
 \section{Introduction}
 
 In physical oceanography, the majority of available data is acquired by satellites\todo{cite NADIR, altimeters..} that cannot measure the interior ocean state. The recent launch of the Surface Water and Ocean Topography (SWOT) mission~\parencite{fu2024} has paved the way for sea surface reconstruction with unprecedented resolution. However, due to the shape of its orbit, this satellite covers the entire surface of the globe in 21 days. Although most parts of the globe are visited multiple times within this 21d-period, many gaps remain in the collected data. The reconstruction of sea-surface dynamics through partial observation has been investigated for a long time. In the late 1980s, some physics-motivated assimilation methods were developed~\parencite{hurlburt1986,mey1987,holland1989,haines1991,cong1995,cong1998}\todo{details (list?) used assimilation techniques and detail assimilation into QG2L}. 
-In the 1990s, statistical methods such as optimal interpolation~\parencite{rienecker1991,traon1998} emerged, forming the basis of the DUACS product\todo{cite DUACS} which remains a widely used real-time gridded ocean product. This interpolation method uses only observation data to reconstruct surface ocean state. To make use of theoretical models of ocean surface dynamics, data assimilation (DA) techniques started to be applied to the ocean system. In order to reduce reconstruction errors, DA combines both simulated and observed data while accounting for their specific sources of error. A wide variety of methods have been developed and applied to the reconstruction of surface ocean dynamics, among which the Kalman filter\todo{refs} and its variations, the Ensemble Kalman filter, the Stochastic Kalman filter\todo{refs}\dots
+In the 1990s, statistical methods such as optimal interpolation~\parencite{rienecker1991,traon1998} emerged, forming the basis of the DUACS product\todo{cite DUACS} which remains a widely used real-time gridded ocean product. This interpolation method uses only observation data to reconstruct surface ocean state. To make use of theoretical models of ocean surface dynamics, data assimilation (DA) techniques started to be applied to the ocean system. In order to reduce reconstruction errors, DA combines both simulated and observed data while accounting for their specific sources of error~\parencite{lahoz2010}. A wide variety of methods have been developed and applied to the reconstruction of surface ocean dynamics, among which the Kalman filter\todo{refs} and its variations, the Ensemble Kalman filter, the Stochastic Kalman filter\todo{refs}\dots
 
 In DA methods, so-called reduce-order models are used to propagate in time the system state. These models use simplified frameworks to emulate ocean system dynamics, allowing to perform efficiently complex DA algorithms. Around the midlatitudes, a simplified framework of choice if the quasi-geostophic (QG) theory. This framework, developed in the 1950~\parencite{charney1950,charney1953}, describes the behavior of flows around the geostrophic balance through the material conservation of potential vorticity (PV) by the geostrophic flow. Such theory has paved the way for many simplified numerical models, whether atmospheric or oceanic~\parencite{phillips1951,held1995}. Although it describes 3D dynamics, it can be discretized by stacking layers of fluid with constant vertical properties, yielding the multilayer QG framework~\parencite{vallis2006}. By considering the deep ocean flow to be at rest, the reduced-gravity (RG) framework can be derived from the multilayer one. This additional simplification offers an evolution equation for the surface flow based on surface flow only. These specific characteristics naturally led to the choice of the RG framework for modeling surface dynamics.
 
@@ -117,8 +117,7 @@ From this expression, we note that the usual RG model advection matches the mult
     \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) = - \frac{f_0^2}{H_1 g_2} \Dt{\tilde{\sf}_2}.
 \end{equation}
 
-In the following, this model will be referred to as SurfML (Surface Multi-Layer). Additionaly to explicitly addressing the RG-related truncation error, this method also provides a proxy for the sublayer stream function, through $\tilde{\sf}_2$. Our specific parametrization of $\tilde{\sf}_2$ will be detailed in~\cref{sec:forward-model}. In the forthcoming, all numerical experiments were conducted using a Pytorch implementation of the multilayer QG equations derived from~\cite{thiry2024} (extended to withstand non-zero boundary conditions). All implemented models and operation are therefore benefitting from Pytorch's built-in automatic differentiation~\parencite{paszke2017}.
-
+In the following, this model will be referred to as SurfML (Surface Multi-Layer). Additionaly to explicitly addressing the RG-related truncation error, this method also provides a proxy for the sublayer stream function, through $\tilde{\sf}_2$. Our specific parametrization of $\tilde{\sf}_2$ will be detailed in~\cref{sec:forward-model}. In the forthcoming, all numerical experiments were conducted using a Pytorch implementation of the multilayer QG equations derived from~\cite{thiry2024} (extended to withstand non-zero boundary conditions).
 
 \section{Variational assimilation}
 
@@ -146,8 +145,13 @@ the cost function rewrites
     \loss\left(\theta\right) = \loss{obs}\left(\theta\right) + \loss{reg}\left(\theta\right).
 \end{equation}
 
+Supposing we can estimate the gradient $\grad \loss$ of the loss function, minimization can be performed through gradient descent.  Regarding our specific experimentations, since all models and operation are implemented using Pytorch, we benefit from the library's built-in automatic differentiation~\parencite{paszke2017} to both retrieve loss function gradient and perform a descent algorithm.
+
+
 
 \section{The forward model}\label{sec:forward-model}
+Hereafter we detail the specificities of the SurfML model and of the sublayer parameterization which was used as propagator in the variational assimilation algorithm.
+
 \subsection{Sublayer parameterization}
 
 In order to keep a reasonable number of parameters for the parameterization of $\tilde{\sf}_2$, we use a reduced-order space to represent its value. We have decided to express $\tilde{\sf}_2$ over a quite simple space so that SurfML performances could not be attributed to the structure of the parameterization rather than the actual error model. Therefore, the spatio-temporal behavior of $\tilde{\sf}_2$ is prescribed through a partition of unity of Gaussian envelopes, both in time and space. Denoting $N_{T}$ the number of time-related envelopes and $N_{XY}$ the number of space-related envelopes at a given time $i$, for given $i \in \{1,\dots,N_T\}$ and $j \in \{1,\dots,N_{XY}\}$, we define
@@ -243,14 +247,14 @@ We have considered two validation experiments. In the first one, we have set a d
 In both experiments, observations are drawn from the surface using an observing system simulation experiment that simulates SWOT-like sampling tracks.
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.75\textwidth]{example-image-a}
+        \includesvg[width=\textwidth]{assets/images/satellite_track.svg}
     \end{center}
-    \caption{Observation tracks}
+    \caption{Example of simulated satellite track over the surface (Surface fields extracted from a three-layer QG double-gyre simulation).}
 \end{figure}
 
 As this work focuses on introducing a new parameterization to reduce model error, we have decided to only consider such parameterization in the control vector. Indeed, since all tested frameworks (RG, VarDyn, SurfML) share identical initial and boundary conditions, differences in performances only results from model error and its correction. Ideal initial and boundary conditions are therefore retrieved from the surface flow of the reference simulation. Furthermore, the estimation of initial and boundary conditions through variational assimilation has already been widely investigated~\parencite{cong1998,zou1995,gunson1996,seiler1993,ayoub2006}, suggesting that our methodology could quite easily be adapted to a more realistic data assimilation configuration.
 
-Assimilation is conducted on 20 days-long periods. Over these periods, satellite passages are simulated and, when a track spans over the considered domain, observation loss is evaluated using the collected data. Regarding the SurfML model, regularization loss is evaluated at every time step. The VarDyn regularization however, is implemented so that wavelet scales are penalized following a $\frac{-5}{3}$ law. Small scales are therefore penalized strongly than large scales.
+Assimilation is conducted on 20 days-long periods. Over these periods, satellite passages are simulated and, when a track spans over the considered domain, observation loss is evaluated using the collected data. Regarding the SurfML model, regularization loss is evaluated at every time step. The VarDyn regularization however, is implemented so that wavelet scales are penalized following a -5/3 power law. Small scales are therefore penalized strongly than large scales.
 
 Parameters for all models are detailed in the following table
 
@@ -306,15 +310,68 @@ where $F$ represent the additional forcing that depends on the frameworks,
     \end{align}
 \end{subequations}
 
+As the reference was established over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}{\kilo\meter}$ domain, we have decided to focus on subdomain of the said field. We selected four $\qty{640}{\kilo\meter}$ x $\qty{1280}{\kilo\meter}$ zones, Z1, Z2, Z3 and Z4
 
-\begin{itemize}
-    \item discussion du nombre de paramètre utilisés, en comparaison avec VarDyn (nombre similaire)
-    \item Montrer les scores obtenus avec SurfML (Sans $\alpha$ ?) -> utilité de la régularisation et pertinence de la méthode
-\end{itemize}
+\begin{figure}[H]
+    \centering
+    \begin{center}
+        \includesvg[width=0.7\textwidth]{assets/images/zones.svg}
+    \end{center}
+    \caption{Detail of the 4 zones of the three-layer QG experiment.}
+\end{figure}
+
+In each of the four zones, variational assimilation is performed with the exact same number of parameters, namely
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|ccc}
+        \toprule
+         & RG & VarDyn & SurfML \\
+        \midrule
+        Number of Parameters & 0 & 8512 & 6321 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Number of parameters}\label{tab:qg3l-parameters-nb}
+\end{table}
+
+We will only display the results on Z2 and Z3 as they present different dynamical features. Z2 for instance is at the heart of the eastward jet and present a surface intensified dynamics. On Z3 however the baroclinic components of the flow is stronger. We thus consider that both zones can illustrate a satisfying variability of flow.
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_32_96_256_384.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z2.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_112_176_64_192.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z3.}
+\end{figure}
+
+Is it worth mentioning that SurfML show similar when fitted onto partial observation and with the previously described regularization as when projetting the real $\sf_2$ field onto the reduced-order space to retrieve decomposition weights.
 
 \subsubsection{Estimation of the sublayer stream function}
 
-As the SurfML method provides an estimation for the sublayer flow, $\sf_2$, we have evalauted
+As the SurfML method provides an estimation for the sublayer flow, $\sf_2$, we have evaluated the reconstruction of $\sf_2$ by $\tilde{\sf}_2$.
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_psi2_32_96_256_384.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z2.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_psi2_112_176_64_192.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z3.}
+\end{figure}
 
 \begin{itemize}
     \item Montrer la RMSE sur la reconstruction de $\sf_2$, discuter de la valeur de $\sim0.6$ : $\pdvt*{\sf_2}$, $\pdvx*{\sf_2}$ et $\pdvx*{\sf_2}$ sont en réalité les vrais champs utilisés par le modèle, et non $\sf_2$, mais une RMSE de 0.6 donne tout de même un proxy acceptable pour $\sf_2$ ? -> montrer des images du champs $\sf_2$ et de sa reconstuction $\tilde{\sf}_2$.
@@ -345,6 +402,21 @@ To assess the relevancy of the deformation radius correction presented in~\cref{
 
 We then conduct the same experiment as before and monitor the ability of the different models to reconstruct the surface dynamics.
 
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmse_32_96_256_384.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z2 using perturbed models.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmse_112_176_64_192.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z3 using perturbed models.}
+\end{figure}
+
 \begin{itemize}
     \item Explication du cadre ``perturbé'' : modification du rayon de déformation du modèle pour évaluer la capacité du modèle à compenser un mauvais rayon de déformation
     \item résultats: RMSE sur les zones considérées -> VarDyn a du mal à gérer lorsque qu'il n'a pas le bon rayon de déformation alors que SurfML arrive à compenser, grâce à la régularization et au $\alpha$
@@ -362,12 +434,69 @@ where $\rho_0$ is the reference density for water.
 
 As the resulting stream function contain small-scale features, it is then smoothed using a Gaussian filter and then downsampled from the high-resolution, curvilinear coordinates of the eNATL60 simulation into the regular, Cartesian grid of the QG models. It is this smoothed, down-scaled field that is used for both initial and boundary conditions of the QG models. The observations however are sampled from the non-filtered surface stream function field.
 
-\ \newline
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/enatl60_rmse.svg}
+    \end{center}
+    \caption{nRMSE on eNATL60 surface stream function (average over 3 consecutive 20-days periods).}
+\end{figure}
+
 
 \begin{itemize}
     \item discussion sur l'ajout du vent ? Ne pas considérer le vent permet de ne pas parler de la conversion du vent à 10m en tension de vent de surface
     \item résultats: Bonne capacité du modèle à reconstruire l'écoulement, meilleure que VarDyn -> proposer une explication ? l'erreur de troncation domine ? ou alors à partir des équations $QG^{+1}$ montrer que le terme advecté contient plus qu'une simple correction de troncation pour le modèle RG ?
 \end{itemize}
+
+\appendix
+
+\section{Additional material regarding QG3L results}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_32_96_64_192.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z1.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_112_176_256_384.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z4.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmse_32_96_64_192.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z1 using perturbed models.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmse_112_176_256_384.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z4 using perturbed models.}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_psi2_32_96_64_192.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z1.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_psi2_112_176_256_384.svg}
+    \end{center}
+    \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z4.}
+\end{figure}
 
 \printbibliography[heading=bibintoc]
 
