@@ -203,7 +203,7 @@ We can compute an estimation of the sublayer advection residual with $\pdvt*{\ti
 
 and we define the overall cost function with
 
-\begin{equation}
+\begin{equation}\label{def:surfml-reg}
     \loss \left(\tilde{\sf}_2\right) = \loss{obs}\left(\tilde{\sf}_2\right) + \gamma \loss{reg}\left(\tilde{\sf}_2\right),
 \end{equation}
 
@@ -247,7 +247,7 @@ We have considered two validation experiments. In the first one, we have set a d
 In both experiments, observations are drawn from the surface using an observing system simulation experiment that simulates SWOT-like sampling tracks.
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/satellite_track.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/satellite_track.svg}
     \end{center}
     \caption{Example of simulated satellite track over the surface (Surface fields extracted from a three-layer QG double-gyre simulation).}
 \end{figure}
@@ -320,39 +320,19 @@ As the reference was established over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}
     \caption{Detail of the 4 zones of the three-layer QG experiment.}
 \end{figure}
 
-In each of the four zones, variational assimilation is performed with the exact same number of parameters, namely
+In each of the four zones, the OSSE follows the same tracks, observing 13000 gridpoints\todo{insert exact nb}. The VarDyn error formulation requires 8512 control parameters whereas the SurfML method uses 6321\todo{Verify if not 6322} control parameters (6320 for the reduced-order decomposition and 1 for the deformation radius correction). Both VarDyn and SurfML regularizations are scaling through an hyperparameter ($\gamma$). Its value has been fitted over the first period in Z2 and then reused in all areas and periods. 
 
-\begin{table}[H]
-    \centering
-    \begin{tabular}{l|ccc}
-        \toprule
-         & RG & VarDyn & SurfML \\
-        \midrule
-        Number of Parameters & 0 & 8512 & 6321 \\
-        \bottomrule
-    \end{tabular}
-    \caption{Number of parameters}\label{tab:qg3l-parameters-nb}
-\end{table}
-
-We will only display the results on Z2 and Z3 as they present different dynamical features. Z2 for instance is at the heart of the eastward jet and present a surface intensified dynamics. On Z3 however the baroclinic components of the flow is stronger. We thus consider that both zones can illustrate a satisfying variability of flow.
-
+We will only display the results on Z2 and Z3 as they present different dynamical features. Z2 for instance is at the heart of the eastward jet and present a surface intensified dynamics. On Z3 however the baroclinic components of the flow is stronger. We thus consider that both zones can illustrate a satisfying variability of flow. Results (averaged on 3 consecutive 20-days periods) are shown in~\cref{fig:qg3L-nrmse-top}.
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_32_96_256_384.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_32_96_256_384.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_112_176_64_192.svg}
     \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z2.}
+    \caption{nRMSE on three-layer QG surface stream function (averaged over 3 consecutive 20-days periods) on Z2 (top) and Z3 (bottom). Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. The dashed line represents the non-regularized SurfML (hence $\gamma = 0$ in~\cref{def:surfml-reg}).}\label{fig:qg3L-nrmse-top}
 \end{figure}
 
-
-\begin{figure}[H]
-    \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_112_176_64_192.svg}
-    \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z3.}
-\end{figure}
-
-Is it worth mentioning that SurfML show similar when fitted onto partial observation and with the previously described regularization as when projetting the real $\sf_2$ field onto the reduced-order space to retrieve decomposition weights.
+Results show that SurfML outperforms VarDyn in all considered areas and periods. Comparison between non-regularized and regularized SurfML highlights the benefits of the physics-based regularization. It is also worth mentioning that, as a comparison, we have tried fitting $\tilde{\sf}_2$ using direct (full-field) observation from $\sf_2$. Plugging the resulting parameters into the SurfML model yields similar (slightly worse) results as SurfML.\todo{Add performance on U,V fields ?}
 
 \subsubsection{Estimation of the sublayer stream function}
 
@@ -360,23 +340,13 @@ As the SurfML method provides an estimation for the sublayer flow, $\sf_2$, we h
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_psi2_32_96_256_384.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_psi2_32_96_256_384.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_psi2_112_176_64_192.svg}
     \end{center}
-    \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z2.}
+    \caption{nRMSE on three-layer QG sublayer stream function (averaged over 3 consecutive 20-days periods) on Z2 (top) and Z3 (bottom). SurfML model is identified by the solid blue line and non-regularized SurfML by the dashed blue line.}
 \end{figure}
 
-
-\begin{figure}[H]
-    \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_psi2_112_176_64_192.svg}
-    \end{center}
-    \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z3.}
-\end{figure}
-
-\begin{itemize}
-    \item Montrer la RMSE sur la reconstruction de $\sf_2$, discuter de la valeur de $\sim0.6$ : $\pdvt*{\sf_2}$, $\pdvx*{\sf_2}$ et $\pdvx*{\sf_2}$ sont en réalité les vrais champs utilisés par le modèle, et non $\sf_2$, mais une RMSE de 0.6 donne tout de même un proxy acceptable pour $\sf_2$ ? -> montrer des images du champs $\sf_2$ et de sa reconstuction $\tilde{\sf}_2$.
-    \item Comparaison aux résultats avec la projection de $\sf_2^{\mathrm{ref}}$ sur la base ? Montrer que le modèle fait "quasiment aussi bien" qu'avec une estimation de $\sf_2$ sur la base considérée.
-\end{itemize}
+Although results show that the regularization improves the reconstruction of $\sf_2$ by $\tilde{\sf}_2$, the quality of the overall reconstruction is not satisfying. However, since the SurfML formulation actually never uses the actual $\tilde{\sf}_2$ field in the advection but rather its derivatives, these derivatives are therefore better-constrained than $\tilde{\sf}_2$. Hence, we look at the reconstruction of $\pdvt*{\sf_2}$ by $\pdvt*{\tilde{\sf}_2}$.\todo{Add $\pdvt*{\sf_2}$ comparison}
 
 
 \subsubsection{Robustness}
@@ -397,34 +367,25 @@ To assess the relevancy of the deformation radius correction presented in~\cref{
         $g_3$ & $\qty{0.0125}{\meter\per\second^2}$ & . & . & . \\
         \bottomrule
     \end{tabular}
-    \caption{Model parameters}\label{tab:qg3l-modified-model-parameters}
+    \caption{Model parameters in the pertubed framework}\label{tab:qg3l-modified-model-parameters}
 \end{table}
 
-We then conduct the same experiment as before and monitor the ability of the different models to reconstruct the surface dynamics.
+We then conduct the same experiment as before and monitor the ability of the different models to tamper incorrect parameters and reconstruct the surface dynamics.
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmse_32_96_256_384.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_pert_rmse_32_96_256_384.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_pert_rmse_112_176_64_192.svg}
     \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z2 using perturbed models.}
+    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z2 (top) and Z3 (bottom) using perturbed models.Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. A light blue line is used for the SurfML model with $\alpha=0$ (hence no deformation radius correction).}
 \end{figure}
 
-
-\begin{figure}[H]
-    \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmse_112_176_64_192.svg}
-    \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z3 using perturbed models.}
-\end{figure}
-
-\begin{itemize}
-    \item Explication du cadre ``perturbé'' : modification du rayon de déformation du modèle pour évaluer la capacité du modèle à compenser un mauvais rayon de déformation
-    \item résultats: RMSE sur les zones considérées -> VarDyn a du mal à gérer lorsque qu'il n'a pas le bon rayon de déformation alors que SurfML arrive à compenser, grâce à la régularization et au $\alpha$
-\end{itemize}
+VarDyn performances greatly degrades when perturbing stratification parameters. This can be explained by the fact that all basis parameter has been carefully tuned using a $\qty{30}{\kilo\meter}$ deformation radius for the model.\todo{redo pert experim with ref using $\neq$ stratif params ?}. SurfML however easily handles perturbation of the stratification parameters. The introduction of a single additional parameter in the control vector, $\alpha$, significantly reduces the nRMSE.
 
 \subsection{eNATL60}
 
-Parameters for all models are detailed are the exact same as the ones from~\cref{tab:qg3l-model-parameters}. In order to instantiate QG models, stream function must be inferred from sea-surface height (SSH) anomaly from eNATL60 simulation results. SSH anomaly $ SSH - {\langle SSH \rangle}_{T,XY}$ is computed by removing the time-space average (evaluated over the 20 days period) from the SSH field. We use the Drakkar Forcing Set 5.2~\parencite{dussin2016} to retrieve the atmospheric pressure anomaly $p_{\mathrm{atm}} - {\langle p_{\mathrm{atm}} \rangle}_{XY}$, (${\langle \cdot \rangle}_{XY}$ denoting the spatial-average operator). Finally, surface stream function $\Psi$ verifies
+Using field from the eNATL60 simulation~\parencite{brodeau2020}, we monitor SurfML's reconstruction of a fluid with ageostrophic dynamics. We have focused on a single area of dimension $\qty{00}{\kilo\meter}$ x $\qty{00}{\kilo\meter}$\todo{find real dimensions} centered on\todo{find area location}.
+Parameters for all models are detailed are the exact same as the ones from~\cref{tab:qg3l-model-parameters}, apart from Coriolis parameters which were set to $f_0 = \qty{00}{\per\second}$ and $\beta = \qty{00}{\per\meter\per\second}$. Surface stream function is inferred from eNATL60's SSH values. First,  SSH anomaly $ SSH - {\langle SSH \rangle}_{T,XY}$ is computed by removing the time-space average (evaluated over the 20 days period) from the SSH field. We then use the Drakkar Forcing Set 5.2~\parencite{dussin2016} to retrieve the atmospheric pressure anomaly $p_{\mathrm{atm}} - {\langle p_{\mathrm{atm}} \rangle}_{XY}$, (${\langle \cdot \rangle}_{XY}$ denoting the spatial-average operator). Finally, surface stream function $\Psi$ verifies
 
 \begin{equation}
     \Psi_{\mathrm{surf}} = \frac{1}{f_0 \rho_0} \left( p_{atm} - {\langle p_{\mathrm{atm}} \rangle}_{XY} \right) + \frac{g}{f_0}\left( SSH - {\langle SSH \rangle}_{T,XY} \right),
@@ -432,21 +393,23 @@ Parameters for all models are detailed are the exact same as the ones from~\cref
 
 where $\rho_0$ is the reference density for water.
 
-As the resulting stream function contain small-scale features, it is then smoothed using a Gaussian filter and then downsampled from the high-resolution, curvilinear coordinates of the eNATL60 simulation into the regular, Cartesian grid of the QG models. It is this smoothed, down-scaled field that is used for both initial and boundary conditions of the QG models. The observations however are sampled from the non-filtered surface stream function field.
+As the resulting stream function contain small-scale features, it is then smoothed using a Gaussian filter\todo{insert std of filter} and then downsampled from the high-resolution, curvilinear coordinates of the eNATL60 simulation into the regular, Cartesian grid of the QG models. It is this smoothed, down-scaled field that is used for both initial and boundary conditions of the QG models. The observations however are sampled from the non-filtered surface stream function field. Once again variational assimilation is conducted over 20-days periods and the quality of the reconstruction is assessed by using nRMSE to compare reference stream function to its reconstructed counterpart.
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/enatl60_rmse.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/enatl60_rmse.svg}
     \end{center}
-    \caption{nRMSE on eNATL60 surface stream function (average over 3 consecutive 20-days periods).}
+    \caption{nRMSE on eNATL60 surface stream function (averaged over 3 consecutive 20-days periods). Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML.}
 \end{figure}
 
+Results show that SurfML still outperforms VarDyn in reconstructing the top layer flow. Such results may indicates that a great component of the error conducted by the RG model can be explained by an advected field (whether only the sublayer geostrophic stream function or a more complex field). Rather than opposing SurfML to VarDyn, the (significant) remaining error may suggest that there would be some benefits in coupling the two method to overcome simplification-related errors.
 
-\begin{itemize}
-    \item discussion sur l'ajout du vent ? Ne pas considérer le vent permet de ne pas parler de la conversion du vent à 10m en tension de vent de surface
-    \item résultats: Bonne capacité du modèle à reconstruire l'écoulement, meilleure que VarDyn -> proposer une explication ? l'erreur de troncation domine ? ou alors à partir des équations $QG^{+1}$ montrer que le terme advecté contient plus qu'une simple correction de troncation pour le modèle RG ?
-\end{itemize}
+\section{Discussion}
 
+\todo{To do}
+
+
+\newpage
 \appendix
 
 \section{Additional material regarding QG3L results}
@@ -454,7 +417,7 @@ As the resulting stream function contain small-scale features, it is then smooth
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_32_96_64_192.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_32_96_64_192.svg}
     \end{center}
     \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z1.}
 \end{figure}
@@ -462,7 +425,7 @@ As the resulting stream function contain small-scale features, it is then smooth
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_112_176_256_384.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_112_176_256_384.svg}
     \end{center}
     \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z4.}
 \end{figure}
@@ -470,7 +433,7 @@ As the resulting stream function contain small-scale features, it is then smooth
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmse_32_96_64_192.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_pert_rmse_32_96_64_192.svg}
     \end{center}
     \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z1 using perturbed models.}
 \end{figure}
@@ -478,14 +441,14 @@ As the resulting stream function contain small-scale features, it is then smooth
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmse_112_176_256_384.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_pert_rmse_112_176_256_384.svg}
     \end{center}
     \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z4 using perturbed models.}
 \end{figure}
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_psi2_32_96_64_192.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_psi2_32_96_64_192.svg}
     \end{center}
     \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z1.}
 \end{figure}
@@ -493,7 +456,7 @@ As the resulting stream function contain small-scale features, it is then smooth
 
 \begin{figure}[H]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_rmse_psi2_112_176_256_384.svg}
+        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_psi2_112_176_256_384.svg}
     \end{center}
     \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z4.}
 \end{figure}
