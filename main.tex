@@ -331,7 +331,7 @@ We will only display the results on Z2 and Z3 as they present different dynamica
         \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_32_96_256_384.svg}
         \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_112_176_64_192.svg}
     \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (averaged over 3 consecutive 20-days periods) on Z2 (top) and Z3 (bottom). Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. The dashed line represents the non-regularized SurfML (hence $\gamma = 0$ in~\cref{def:surfml-reg}).}\label{fig:qg3L-nrmse-top}
+    \caption{nRMSE on three-layer QG surface stream function (averaged over 12 20-days periods, each separated by 20 days.) on Z2 (top) and Z3 (bottom). Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. The dashed line represents the non-regularized SurfML (hence $\gamma = 0$ in~\cref{def:surfml-reg}).}\label{fig:qg3L-nrmse-top}
 \end{figure}
 
 Results show that SurfML outperforms VarDyn in all considered areas and periods. Comparison between non-regularized and regularized SurfML highlights the benefits of the physics-based regularization. It is also worth mentioning that, as a comparison, we have tried fitting $\tilde{\sf}_2$ using direct (full-field) observation from $\sf_2$. Plugging the resulting parameters into the SurfML model yields similar (slightly worse) results as SurfML.\todo{Add performance on U,V fields ?}
@@ -345,7 +345,7 @@ As the SurfML method provides an estimation for the sublayer flow, $\sf_2$, we h
         \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_psi2_32_96_256_384.svg}
         \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_psi2_112_176_64_192.svg}
     \end{center}
-    \caption{nRMSE on three-layer QG sublayer stream function (averaged over 3 consecutive 20-days periods) on Z2 (top) and Z3 (bottom). SurfML model is identified by the solid blue line and non-regularized SurfML by the dashed blue line.}
+    \caption{nRMSE on three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days.) on Z2 (top) and Z3 (bottom). SurfML model is identified by the solid blue line and non-regularized SurfML by the dashed blue line.}
 \end{figure}
 
 Although results show that the regularization improves the reconstruction of $\sf_2$ by $\tilde{\sf}_2$, the quality of the overall reconstruction is far from being as it was for the surface flow. Earlier attempts, focusing on subsurface flow reconstruction, were able to reach lower nRMSE values but only after more than 60 days of model spin-up under regular surface state assimilation~\parencite{hurlburt1986,haines1991}. One additional detail regarding the SurfML is that the model formulation actually never uses the actual $\tilde{\sf}_2$ field in the advection but rather its derivatives, through $\Dt*{\tilde{\sf}_2}$, which are therefore better-constrained than $\tilde{\sf}_2$. Hence, we look at the reconstruction of $\pdvt*{\sf_2}$ by $\Dt*{\tilde{\sf}_2}$.
@@ -355,7 +355,7 @@ Although results show that the regularization improves the reconstruction of $\s
         \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_Dtpsi2_32_96_256_384.svg}
         \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_Dtpsi2_112_176_64_192.svg}
     \end{center}
-    \caption{nRMSE on material derivative of three-layer QG sublayer stream function (averaged over 3 consecutive 20-days periods) on Z2 (top) and Z3 (bottom). SurfML model is identified by the solid blue line and non-regularized SurfML by the dashed blue line.}
+    \caption{nRMSE on material derivative of three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days.) on Z2 (top) and Z3 (bottom). SurfML model is identified by the solid blue line and non-regularized SurfML by the dashed blue line.}
 \end{figure}
 
 Although still not as good as top layer reconstruction scores, sublayer stream function material time derivative is better reconstructed than the field itself. Actually, when projecting the sublayer stream function onto the reduced-order space, the resulting error in the material derivative of the sublayer stream function is not very far from the one obtained using SurfML. Once again, result show the benefit of using the physics-based regularization.
@@ -425,58 +425,6 @@ Results show that SurfML still outperforms VarDyn in reconstructing the top laye
     \item Improve model by choosing a more specific reduced-order space for $\tilde{\sf}_2$ to improve model reconstructions capacities
 \end{itemize}
 
-
-\newpage
-\appendix
-
-\section{Additional material regarding QG3L results}
-
-
-\begin{figure}[H]
-    \begin{center}
-        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_32_96_64_192.svg}
-    \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z1.}
-\end{figure}
-
-
-\begin{figure}[H]
-    \begin{center}
-        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_112_176_256_384.svg}
-    \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z4.}
-\end{figure}
-
-
-\begin{figure}[H]
-    \begin{center}
-        \includesvg[width=0.7\textwidth]{assets/images/qg3l_pert_rmse_32_96_64_192.svg}
-    \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z1 using perturbed models.}
-\end{figure}
-
-
-\begin{figure}[H]
-    \begin{center}
-        \includesvg[width=0.7\textwidth]{assets/images/qg3l_pert_rmse_112_176_256_384.svg}
-    \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z4 using perturbed models.}
-\end{figure}
-
-\begin{figure}[H]
-    \begin{center}
-        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_psi2_32_96_64_192.svg}
-    \end{center}
-    \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z1.}
-\end{figure}
-
-
-\begin{figure}[H]
-    \begin{center}
-        \includesvg[width=0.7\textwidth]{assets/images/qg3l_rmse_psi2_112_176_256_384.svg}
-    \end{center}
-    \caption{nRMSE on three-layer QG sublayer stream function (average over 3 consecutive 20-days periods) on Z4.}
-\end{figure}
 
 \printbibliography[heading=bibintoc]
 
