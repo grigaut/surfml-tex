@@ -371,18 +371,18 @@ To assess the relevancy of the deformation radius correction presented in~\cref{
         \toprule
         Parameter & QG3L & RG & VarDyn & SurfML \\
         \midrule
-        $H_1$ & $\qty{400}{\meter}$ & $\qty{400}{\meter}$ & $\qty{360}{\meter}$ & $\qty{600}{\meter}$ \\
-        $H_2$ & $\qty{1100}{\meter}$ & . & . & $\qty{900}{\meter}$ \\
+        $H_1$ & $\qty{400}{\meter}$ & $\qty{150}{\meter}$ & $\qty{135}{\meter}$ & $\qty{150}{\meter}$ \\
+        $H_2$ & $\qty{1100}{\meter}$ & . & . & $\qty{1350}{\meter}$ \\
         $H_3$ & $\qty{2600}{\meter}$ & . & . & . \\
-        $g_1$ & $\qty{9.81}{\meter\per\second^2}$ & $\qty{0.002499}{\meter\per\second^2}$ & $\qty{0.0025}{\meter\per\second^2}$ & $\qty{9.81}{\meter\per\second^2}$ \\
-        $g_2$ & $\qty{0.025}{\meter\per\second^2}$ & . & . & $\qty{0.0025}{\meter\per\second^2}$ \\
+        $g_1$ & $\qty{9.81}{\meter\per\second^2}$ & $\qty{0.0249}{\meter\per\second^2}$ & $\qty{0.025}{\meter\per\second^2}$ & $\qty{9.81}{\meter\per\second^2}$ \\
+        $g_2$ & $\qty{0.025}{\meter\per\second^2}$ & . & . & $\qty{0.025}{\meter\per\second^2}$ \\
         $g_3$ & $\qty{0.0125}{\meter\per\second^2}$ & . & . & . \\
         \bottomrule
     \end{tabular}
-    \caption{Model parameters in the pertubed framework}\label{tab:qg3l-modified-model-parameters}
+    \caption{Model parameters in the perturbed framework}\label{tab:qg3l-modified-model-parameters}
 \end{table}
 
-We then conduct the same experiment as before and monitor the ability of the different models to tamper incorrect parameters and reconstruct the surface dynamics.
+We then conducted the same experiment as before and monitored the ability of the different models to tamper incorrect parameters and reconstruct the surface dynamics.
 
 \begin{figure}[H]
     \begin{center}
@@ -392,7 +392,7 @@ We then conduct the same experiment as before and monitor the ability of the dif
     \caption{nRMSE on three-layer QG surface stream function (average over 3 consecutive 20-days periods) on Z2 (top) and Z3 (bottom) using perturbed models.Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. A light blue line is used for the SurfML model with $\alpha=0$ (hence no deformation radius correction).}
 \end{figure}
 
-VarDyn performances greatly degrades when perturbing stratification parameters. This can be explained by the fact that all basis parameter has been carefully tuned using a $\qty{30}{\kilo\meter}$ deformation radius for the model.\todo{redo pert experim with ref using $\neq$ stratif params ?}. SurfML however easily handles perturbation of the stratification parameters. The introduction of a single additional parameter in the control vector, $\alpha$, significantly reduces the nRMSE.
+VarDyn performances degrades when perturbing stratification parameters especially in Z2, where the flow is dominated by baroclinic motion. SurfML however easily handles perturbation of the stratification parameters. The introduction of a single additional parameter in the control vector, $\alpha$, significantly reduces the nRMSE.
 
 \subsection{eNATL60}
 
