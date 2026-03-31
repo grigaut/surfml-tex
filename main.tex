@@ -242,14 +242,14 @@ Our model implementation replaces $\mat{A}$ by $\tilde{\mat{A}}_{\alpha}$ in the
 
 \section{Method validation}
 
-We have considered two validation experiments. In the first one, we have set a double-gyre experiment using a three-layer QG model. Therefore, the reconstruction error from the RG model (dynamical interpolation situation) is mostly explained by the truncation of the QG equations. Within this framework, we can also assess the ability of SurfML model in reconstructing top layer dynamics and compare its performances with VarDyn. Two variants of this setup have been explored. One where model parameters (reference layer depth, reduced gravity values\dots) are the same in the reference QG model and in the RG counterpart. This configuration also allows a fair comparison for $\tilde{\sf}_2$ and $\sf_2$. In the other variant, model parameters are modified to assess the robustness of each of the models when dealing with incorrect baroclinic deformation radius. The second validation experiment uses surface fields from the eNATL60 simulation~\parencite{brodeau2020} as the reference flow. This experiment investigate the capability of our model in reproducing a flow that present ageostrophic, complex and rich dynamical features.
+We have considered two validation experiments. In the first one, we have set a double-gyre experiment using a three-layer QG model (QG3L). Therefore, the reconstruction error from the RG model (dynamical interpolation situation) is mostly explained by the truncation of the QG equations. Within this framework, we can also assess the ability of SurfML model in reconstructing top layer dynamics and compare its performances with VarDyn. Two variants of this setup have been explored. One where model parameters (reference layer depth, reduced gravity values\dots) are the same in the reference QG model and in the RG counterpart. This configuration also allows a fair comparison for $\tilde{\sf}_2$ and $\sf_2$. In the other variant, model parameters are modified to assess the robustness of each of the models when dealing with incorrect baroclinic deformation radius. The second validation experiment uses surface fields from the eNATL60 simulation~\parencite{brodeau2020} as the reference flow. This experiment investigate the capability of our model in reproducing a flow that present ageostrophic, complex and rich dynamical features.
 
 In both experiments, observations are drawn from the surface using an observing system simulation experiment that simulates SWOT-like sampling tracks.
 \begin{figure}[H]
     \begin{center}
         \includesvg[width=0.95\textwidth]{assets/images/satellite_track.svg}
     \end{center}
-    \caption{Example of simulated satellite track over the surface (Surface fields extracted from a three-layer QG double-gyre simulation).}
+    \caption{Example of simulated satellite track over the surface (Surface fields extracted from a QG3L double-gyre simulation).}
 \end{figure}
 
 As this work focuses on introducing a new parameterization to reduce model error, we have decided to only consider such parameterization in the control vector. Indeed, since all tested frameworks (RG, VarDyn, SurfML) share identical initial and boundary conditions, differences in performances only results from model error and its correction. Ideal initial and boundary conditions are therefore retrieved from the surface flow of the reference simulation. Furthermore, the estimation of initial and boundary conditions through variational assimilation has already been widely investigated~\parencite{cong1998,zou1995,gunson1996,seiler1993,ayoub2006}, suggesting that our methodology could quite easily be adapted to a more realistic data assimilation configuration.
@@ -312,7 +312,7 @@ where $F$ represent the additional forcing that depends on the frameworks,
     \end{align}
 \end{subequations}
 
-As the reference was established over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}{\kilo\meter}$ domain, we have decided to focus on subdomain of the said field. We selected four $\qty{640}{\kilo\meter}$ x $\qty{1280}{\kilo\meter}$ zones, Z1, Z2, Z3 and Z4
+As the reference was established over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}{\kilo\meter}$ domain, we have decided to focus on subdomains of the said area. We selected two $\qty{640}{\kilo\meter}$ x $\qty{1280}{\kilo\meter}$ zones, Z1, Z2
 
 \begin{figure}[H]
     \centering
@@ -322,15 +322,29 @@ As the reference was established over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}
     \caption{Detail of the 4 zones of the three-layer QG experiment.}
 \end{figure}
 
-In each of the four zones, the OSSE follows the same tracks, observing 13243 gridpoints. The VarDyn error formulation requires 8512 control parameters whereas the SurfML method uses 6322 control parameters (6321 for the reduced-order decomposition and 1 for the deformation radius correction). Both VarDyn and SurfML regularizations are scaling through an hyperparameter ($\gamma$). Its value has been fitted over the first period in Z2 and then reused in all areas and periods. 
+In both zones, the OSSE follows the same tracks, observing 13243 gridpoints. Number of control parameters for the different models are detailed in the following table
 
-We will only display the results on Z2 and Z3 as they present different dynamical features. Z2 for instance is at the heart of the eastward jet and present a surface intensified dynamics. On Z3 however the baroclinic components of the flow is stronger. We thus consider that both zones can illustrate a satisfying variability of flow. Results (averaged on 3 consecutive 20-days periods) are shown in~\cref{fig:qg3L-nrmse-top}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|ccc}
+        \toprule
+          & RG & VarDyn & SurfML \\
+        \midrule
+        Control vector size &  0 & 8512 & 6322 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Control vector sizes for the different models in the QG3L experiment.}\label{tab:qg3l-control-vector-size}
+\end{table}
+
+Both VarDyn and SurfML regularizations are scaling through an hyperparameter ($\gamma$). The value of $\gamma$ has been taken constant over all areas and assimilation periods. Regarding SurfML, its value has been fitted so that regularization loss on first assimilation step was around 1\%-1‰ of the observation loss in all areas and periods. Regarding VarDyn, the value $\gamma$  has been empirically chosen so that the model would perform as best as possible while not providing field that were small-scale intensified (which it tends to do in the absence of regularization). However, across all experimentations (either regarding SurfML or VarDyn), quality of the reconstruction showed small sensitivity to the value of $\gamma$ for a given order of magnitude.
+
+We will only display the results on Z1 and Z2 as they present different dynamical features. Z1 for instance is at the heart of the eastward jet and present a surface intensified dynamics. On Z2 however the baroclinic components of the flow is stronger. We thus consider that both zones can illustrate a satisfying variability of flow. Results (averaged on 3 consecutive 20-days periods) are shown in~\cref{fig:qg3L-nrmse-top}.
 
 \begin{figure}[H]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_rmses.svg}
     \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (averaged over 12 20-days periods, each separated by 20 days.) on Z2 (left) and Z3 (right). Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. The dashed line represents the non-regularized SurfML (hence $\gamma = 0$ in~\cref{def:surfml-reg}).}\label{fig:qg3L-nrmse-top}
+    \caption{nRMSE on three-layer QG surface stream function (averaged over 12 20-days periods, each separated by 20 days.) on Z1 (left) and Z2 (right). Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. The dashed line represents the non-regularized SurfML (hence $\gamma = 0$ in~\cref{def:surfml-reg}).}\label{fig:qg3L-nrmse-top}
 \end{figure}
 
 Results show that SurfML outperforms VarDyn in all considered areas and periods. Comparison between non-regularized and regularized SurfML highlights the benefits of the physics-based regularization. It is also worth mentioning that, as a comparison, we have tried fitting $\tilde{\sf}_2$ using direct (full-field) observation from $\sf_2$. Plugging the resulting parameters into the SurfML model yields similar (slightly worse) results as SurfML.
@@ -341,7 +355,7 @@ The visual comparison of vorticity fields shows almost identical field. An examp
     \begin{center}
         \includesvg[width=0.95\textwidth]{assets/images/qg3l_vorticity_32_96_256_384.svg}
     \end{center}
-    \caption{Surface vorticity fields retrieved from first assimilation cycle performed in Z2. Top panels are SurfML fields and bottom the reference vorticity fields from the three-layer QG simulation.  Left to right columns respectively show fields after 5, 10, 15 and 20 days of simulation.}\label{fig:qg3L-vorticity}
+    \caption{Surface vorticity fields retrieved from first assimilation cycle performed in Z1. Top panels are SurfML fields and bottom the reference vorticity fields from the three-layer QG simulation.  Left to right columns respectively show fields after 5, 10, 15 and 20 days of simulation.}\label{fig:qg3L-vorticity}
 \end{figure}
 \subsubsection{Estimation of the sublayer stream function}
 
@@ -351,10 +365,10 @@ As the SurfML method provides an estimation for the sublayer flow, $\sf_2$, we h
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_psi2_rmses.svg}
     \end{center}
-    \caption{nRMSE on three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days.) on Z2 (left) and Z3 (right). SurfML model is identified by the solid blue line and non-regularized SurfML by the dashed blue line.}\label{fig:qg3L-psi2-rmse}
+    \caption{nRMSE on three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days.) on Z1 (left) and Z2 (right). SurfML model is identified by the solid blue line and non-regularized SurfML by the dashed blue line.}\label{fig:qg3L-psi2-rmse}
 \end{figure}
 
-Although results show that the regularization improves the reconstruction of $\sf_2$ by $\tilde{\sf}_2$, the quality of the overall reconstruction is far from being as it was for the surface flow. Earlier attempts, focusing on subsurface flow reconstruction, were able to reach lower nRMSE values but only after more than 60 days of model spin-up under regular surface state assimilation~\parencite{hurlburt1986,haines1991}. One additional detail regarding the SurfML is that the model formulation actually never uses the actual $\tilde{\sf}_2$ field in the advection but rather its derivatives, through $\Dt*{\tilde{\sf}_2}$, which are therefore better-constrained than $\tilde{\sf}_2$. Actually, evaluating the nRMSE of $\Dt*{\tilde{\sf}_2}$ yields better results, as it is mostly stable around 0.5 (resp. 0.15) in Z2 (resp. Z3). Corresponding figure can be found in the appendix (~\cref{fig:qg3L-Dtpsi2-rmse}). Although still not as good as top layer reconstruction scores, sublayer stream function material time derivative is better reconstructed than the field itself. Actually, when projecting the sublayer stream function onto the reduced-order space, the resulting error in the material derivative of the sublayer stream function is not very far from the one obtained using SurfML. Once again, result show the benefit of using the physics-based regularization.
+Although results show that the regularization improves the reconstruction of $\sf_2$ by $\tilde{\sf}_2$, the quality of the overall reconstruction is far from being as it was for the surface flow. Earlier attempts, focusing on subsurface flow reconstruction, were able to reach lower nRMSE values but only after more than 60 days of model spin-up under regular surface state assimilation~\parencite{hurlburt1986,haines1991}. One additional detail regarding the SurfML is that the model formulation actually never uses the actual $\tilde{\sf}_2$ field in the advection but rather its derivatives, through $\Dt*{\tilde{\sf}_2}$, which are therefore better-constrained than $\tilde{\sf}_2$. Actually, evaluating the nRMSE of $\Dt*{\tilde{\sf}_2}$ yields better results, as it is mostly stable around 0.5 (resp. 0.15) in Z1 (resp. Z2). Corresponding figure can be found in the appendix (~\cref{fig:qg3L-Dtpsi2-rmse}). Although still not as good as top layer reconstruction scores, sublayer stream function material time derivative is better reconstructed than the field itself. Actually, when projecting the sublayer stream function onto the reduced-order space, the resulting error in the material derivative of the sublayer stream function is not very far from the one obtained using SurfML. Once again, result show the benefit of using the physics-based regularization.
 
 \subsubsection{Robustness}
 
@@ -380,10 +394,10 @@ We then conducted the same experiment as before and monitored the ability of the
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmses.svg}
     \end{center}
-    \caption{nRMSE on three-layer QG surface stream function (average over 12 different assimilation periods each of 20 days) on Z2 (left) and Z3 (right) using perturbed models.Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. A light blue line is used for the SurfML model with $\alpha=0$ (hence no deformation radius correction).}
+    \caption{nRMSE on three-layer QG surface stream function (average over 12 different assimilation periods each of 20 days) on Z1 (left) and Z2 (right) using perturbed models.Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG, brown for VarDyn and dark blue for SurfML. A light blue line is used for the SurfML model with $\alpha=0$ (hence no deformation radius correction).}
 \end{figure}
 
-VarDyn performances degrades when perturbing stratification parameters especially in Z2, where the flow is dominated by baroclinic motion. SurfML however easily handles perturbation of the stratification parameters. Although deformation radius correction is prescribed using a single parameter, the difference between the light blue line (without deformation radius correction) and the dark blue (with deformation radius correction) highlights the benefit of such approach.
+VarDyn performances degrades when perturbing stratification parameters especially in Z1, where the flow is dominated by baroclinic motion. SurfML however easily handles perturbation of the stratification parameters. Although deformation radius correction is prescribed using a single parameter, the difference between the light blue line (without deformation radius correction) and the dark blue (with deformation radius correction) highlights the benefit of such approach.
 
 \subsection{eNATL60}
 
@@ -396,16 +410,30 @@ Parameters for all models are detailed are the exact same as the ones from~\cref
 
 where $\rho_0$ is the reference density for water.
 
-As the resulting stream function contain small-scale features, it is then smoothed using a Gaussian filter and then downsampled from the high-resolution, curvilinear coordinates of the eNATL60 simulation into the regular, Cartesian grid of the QG models. It is this smoothed, down-scaled field that is used for both initial and boundary conditions of the QG models. The observations however are sampled from the non-filtered surface stream function field. Once again variational assimilation is conducted over 20-days periods and the quality of the reconstruction is assessed by using nRMSE to compare reference stream function to its reconstructed counterpart.
+As the resulting stream function contain small-scale features, it is then smoothed using a Gaussian filter and then downsampled from the high-resolution, curvilinear coordinates of the eNATL60 simulation into the regular, Cartesian grid of the QG models. It is this smoothed, down-scaled field that is used for both initial and boundary conditions of the QG models. The observations however are sampled from the non-filtered surface stream function field, using the same OSSE as for the three-layer QG comparison. A total of 10333 pixels are observed during a single assimilation cycle. Control vectors size are as follows
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|ccc}
+        \toprule
+          & RG & VarDyn & SurfML \\
+        \midrule
+        Control vector size &  0 & 6608 & 5475 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Control vector sizes for the different models in the eNATL60 experiment.}\label{tab:enatl60-control-vector-size}
+\end{table}
+
+Once again variational assimilation is conducted over 20-days periods and the quality of the reconstruction is assessed by using nRMSE to compare reference stream function to its reconstructed counterpart. Assimilation is conducted over 4 consecutive periods, during two different seasons, summer (July, August, September) and winter (January, February, March). Results are shown in~\cref{fig:enatl60-nrmse}.
 
 \begin{figure}[H]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/enatl60_rmses.svg}
     \end{center}
-    \caption{nRMSE on eNATL60 surface stream function (averaged over 4 consecutive 20-days periods). Two different seasons were studied, summer (July, August, September), displayed in left panel and winter (January, February, March), in right panel. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. Solid line represents the averaged over the 4 periods and the shaded area the empirical standard deviation.}
+    \caption{nRMSE on eNATL60 surface stream function (averaged over 4 consecutive 20-days periods). Summer is displayed in right panel and winter in left one. Models are identified by the line color, black for RG, brown for VarDyn and blue for SurfML. Solid line represents the averaged over the 4 periods and the shaded area the empirical standard deviation.}\label{fig:enatl60-nrmse}
 \end{figure}
 
-Results show that SurfML still outperforms VarDyn in reconstructing the top layer flow in a realistic configuration. Such results indicate that a great component of the error conducted by the RG model can be explained by an advected field (whether only the sublayer geostrophic stream function or a more complex field). 
+Results show that SurfML still outperforms VarDyn in reconstructing the top layer flow in a realistic configuration. Such results indicate that a great component of the error conducted by the RG model can be explained by an advected field (whether only the sublayer geostrophic stream function or a more complex field). The performances during winter show higher variability than the summer ones. Indeed, error profiles were very different from one period to another, especially at the beginning of the period, thus explaining the high standard deviation around the third day. All models error profiles followed similar trends in each period and the overall hierarchy (RG with highest nRMSE and SurfML with lowest) remained consistent across all periods.
 
 
 The visual comparison of the surface vorticity field demonstrates the ability of the SurfML method in reconstruction a realistic flow. An example of the vorticity fields in shown in~\cref{fig:enatl60-vorticity}
@@ -417,18 +445,17 @@ The visual comparison of the surface vorticity field demonstrates the ability of
     \caption{Surface vorticity fields retrieved from first assimilation cycle performed in summer. Top panels are SurfML fields and bottom the reference vorticity fields from the eNATL60 simulation. Left to right columns respectively show fields after 5, 10, 15 and 20 days of simulation.}\label{fig:enatl60-vorticity}
 \end{figure}
 
-Since both fields (from SurfML and eNATL60) are not on the same coordinates system (low resolution, cartesian and high-resolution, curvilinear), pixel to pixel comparison can not be conducted using the images from~\cref{fig:enatl60-vorticity}. The overall comparison of the two field however show that SurfML is able to reconstruct larger vortices, although its resolution prevents it from 
+Since both fields (from SurfML and eNATL60) are not on the same coordinates system (low resolution, cartesian and high-resolution, curvilinear), pixel to pixel comparison can not be conducted using the images from~\cref{fig:enatl60-vorticity}. The overall comparison of the two field however show that SurfML is able to reconstruct larger vortices, although its resolution prevents it from rendering smaller ones.
 
 \section{Discussion}
 
-\begin{itemize}
-    \item As pointed out by~\cite{hurlburt1986}, RG model can not account for bottom topography. SurfML however, could do so by introducing a topography-related term in the bottom layer equation (hence the regularization)
-    \item Switch to real observation
-    \item Investigate in details the benefits of mixing both VarDyn and SurfML methodology
-    \item Improve model by choosing a more specific reduced-order space for $\tilde{\sf}_2$ to improve model reconstructions capacities
-\end{itemize}
+Although the RG framework is built upon a truncated version of the multilayer QG equations, we have shown that the resulting error can be addressed by parameterizing the sublayer stream function. Performing variational assimilation with such parameterization allows for a significant improvement of the surface flow reconstruction when compared to the dynamical interpolation using solely a RG model. The SurfML method also makes use of the sublayer QG advection equation to replace the usual background term regularization by a physics-derived one. Such regularization does not rely on any prior estimation of the sublayer field allowing for more flexibility on the sublayer flow dynamics. Additionally, we have introduced a single additional parameter which is able to damper incorrect stratification parameters, thus improving the robustness of the model. SurfML also outperforms state-of-the-art surface flow reconstruction flow, not only in an idealized multilayer QG framework but also in the realistic configuration of the eNATLL60 simulation.
 
-Although we have identified our parameter to the sublayer stream function, this identification is only relevant in the multilayer QG framework. However, in a realistic framework, this quantity can be identified to both the sublayer stream function and the next-order terms of the QG approximation~\parencite{muraki1999}. While being insufficient to closing the gap between Ertel's PV~\parencite{muller1995} conservation and the QG framework, it might suffice to correct some of QG's approximations, thus explaining SurfML's ability of reconstructing a realistic flow.
+Additionally, the SurfML method yields an estimation for the sublayer stream function, which, when compared to the actual sublayer field of multilayer QG model shows moderate reconstruction skills. However, since we have decided not to use a reduced-order space that would encourage physically-relevant sublayer stream function patterns, there could be room for improvement in the sublayer flow reconstruction (and therefore in the surface reconstruction as well). However, enforcing a QG-specific structure for the sublayer flow might harm the model's ability to reconstruct non-QG patterns of a more realistic flow. Hence, the method might be improved by digging into the next-order terms of the QG approximation~\parencite{muraki1999}. In a non-QG framework, the parameterized field might be identified to any non-RG terms of the PV that would be transported by the geostrophic flow. Therefore, emulating the ageostrophic velocity components might be way to improve the model by narrowing the gap the QG PV conservation and Ertel's PV conservation~\parencite{muller1995}. Some improvement might also be achieved by combining SurfML and VarDyn's methodologies. SurfML's parameterization would then tackle the truncation error while leaving to VarDyn's forcing all the remaining unresolved processes.
+
+Furthermore, it would be possible to modify the SurfML formalism to account for bottom topography. Indeed, the topography can have a significant impact on the flow but, as pointed out by~\cite{hurlburt1986}, the RG framework is not able to take it into account. SurfML however, assuming that the flow is two-layered, can be modified to include a topography-related term in the regularization (hence in the bottom layer equation). Bottom topography would then be able to impact surface flow.
+
+Finally, the next step would be to apply the SurfML method to real observation. Although the eNATL60 simulation is realistic enough to grant confidence into the model's ability to handle real data, moving to such data yield notable challenges. Initial and boundary conditions on the surface stream function would have to be addressed, whether estimated through climatology or gridded products, or included into the control vector.
 
 \newpage
 
@@ -440,7 +467,7 @@ Although we have identified our parameter to the sublayer stream function, this 
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_Dt_psi2_rmses.svg}
     \end{center}
-    \caption{nRMSE on material derivative of three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days.) on Z2 (top) and Z3 (bottom). SurfML model is identified by the solid blue line and non-regularized SurfML by the dashed blue line.}\label{fig:qg3L-Dtpsi2-rmse}
+    \caption{nRMSE on material derivative of three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days.) on Z1 (top) and Z2 (bottom). SurfML model is identified by the solid blue line and non-regularized SurfML by the dashed blue line.}\label{fig:qg3L-Dtpsi2-rmse}
 \end{figure}
 
 \printbibliography[heading=bibintoc]
