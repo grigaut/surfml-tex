@@ -13,7 +13,7 @@
 
 \begin{document}
 
-\title{Surface Multi-Layer}
+\title{Variational assimilation of ocean surface using a truncature-acknowledging reduced-gravity model}
 \author{Gaétan Rigaut}
 
 % \abstract{}
@@ -227,7 +227,7 @@ where $\lambda_{\rightleftarrows}$ is the baroclinic-related eigenvalue and $\la
 
 \begin{subequations}
     \begin{align}
-        \tilde{\mat{A}}_{\alpha} & = \mat{C}_{\mathrm{M2L}}\begin{bmatrix}\left(1+\alpha\right)\lambda_{\rightleftarrows} & 0 \\ 0 & \lambda_{\rightrightarrows}\end{bmatrix}\mat{C}_{\mathrm{L2M}}, &\\
+        \tilde{\mat{A}}_{\alpha} & = \mat{C}_{\mathrm{M2L}}\begin{bmatrix}\left(1+\alpha\right)\lambda_{\rightleftarrows} & 0 \\ 0 & \lambda_{\rightrightarrows}\end{bmatrix}\mat{C}_{\mathrm{L2M}}, \\
         & = \mat{A} + \alpha\lambda_{\rightleftarrows}\mat{C}_{\mathrm{M2L}}\begin{bmatrix}1 & 0 \\ 0 & 0\end{bmatrix}\mat{C}_{\mathrm{L2M}},
     \end{align}
 \end{subequations}
@@ -351,14 +351,14 @@ We will only display the results on Z1 and Z2 as they present different dynamica
 
 Results show that SurfML outperforms VarDyn in all considered areas and periods. Comparison between non-regularized and regularized SurfML highlights the benefits of the physics-based regularization. It is also worth mentioning that, as a comparison, we have tried fitting $\tilde{\sf}_2$ using direct (full-field) observation from $\sf_2$. Plugging the resulting parameters into the SurfML model yields similar results as SurfML (corresponding figure can be found in the appendix~\cref{fig:qg3L-proj-rmses}).
 
-The visual comparison of vorticity fields shows almost identical fields. An example of such fields after 10, 15 and 20 days of simulation are displayed in~\cref{fig:qg3L-vorticity}.
+The visual comparison of vorticity fields shows almost identical fields. An example of such fields after 10, 15 and 20 days of simulation are displayed in~\cref{fig:qg3L-vorticity}\todo{Rewrite paragraph}.
 
 \begin{figure}[H]
     \begin{center}
         \includesvg[width=0.95\textwidth]{assets/images/qg3l_vorticity_32_96_256_384.svg}
     \end{center}
     \caption{Surface vorticity fields retrieved from first assimilation cycle performed in Z1. Top panels are SurfML fields and bottom the reference vorticity fields from the three-layer QG simulation.  Left to right columns respectively show fields after 5, 10, 15 and 20 days of simulation.}\label{fig:qg3L-vorticity}
-\end{figure}
+\end{figure}\todo{adapt label}
 \subsubsection{Estimation of the sublayer stream function}
 
 As the SurfML method provides an estimation for the sublayer flow, $\sf_2$, we have evaluated the reconstruction of $\sf_2$ by $\tilde{\sf}_2$. Given the reference sublayer stream function from the three-layer QG simulation, nRMSE is evaluated for $\tilde{\sf}_2$. Averages and standard deviation are computed over the variational assimilation periods as for the surface stream function.
@@ -444,9 +444,9 @@ The visual comparison of the surface vorticity field demonstrates the ability of
         \includesvg[width=\textwidth]{assets/images/enatl60_vorticity_summer.svg}
     \end{center}
     \caption{Surface vorticity fields retrieved from first assimilation cycle performed in summer. Top panels are SurfML fields and bottom the reference vorticity fields from the eNATL60 simulation. Left to right columns respectively show fields after 5, 10, 15 and 20 days of simulation.}\label{fig:enatl60-vorticity}
-\end{figure}
+\end{figure}\todo{Adapt label}
 
-Since both fields (from SurfML and eNATL60) are not on the same coordinates system (low resolution, cartesian and high-resolution, curvilinear), pixel to pixel comparison can not be conducted using the images from~\cref{fig:enatl60-vorticity}. The overall comparison of the two field however show that SurfML is able to reconstruct larger vortices, although its resolution prevents it from rendering smaller ones.
+Since both fields (from SurfML and eNATL60) are not on the same coordinates system (low resolution, cartesian and high-resolution, curvilinear), pixel to pixel comparison can not be conducted using the images from~\cref{fig:enatl60-vorticity}. The overall comparison of the two field however show that SurfML is able to reconstruct larger vortices, although its resolution prevents it from rendering smaller ones.\todo{Rewrite paragraph}.
 
 \section{Discussion}
 
