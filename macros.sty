@@ -19,13 +19,13 @@
     \IfBooleanTF{#1}
     { % starred: partial with subscript
         \IfNoValueTF{#3}
-        {\ensuremath{\partial_{{#2}}}}               % no arg, just \partial_{t}
-        {\ensuremath{\partial_{{#2}} #3}}             % with arg, \partial_t something
+        {\ensuremath{\partial_{{#2}}}} % \partial_{#2}
+        {\ensuremath{\partial_{{#2}} #3}}  % \partial_{#2} something
     }
     { % unstarred: fraction
         \IfNoValueTF{#3}
-        {\ensuremath{\frac{\partial}{\partial {#2}}}}    % no arg: \partial / \partial t
-        {\ensuremath{\frac{\partial #3}{\partial {#2}}}} % with arg: \partial something / \partial t
+        {\ensuremath{\frac{\partial}{\partial {#2}}}}  % \partial_{#2}
+        {\ensuremath{\frac{\partial #3}{\partial {#2}}}} % \partial_{#2} something
     }%
 }
 
@@ -37,14 +37,14 @@
 }
 
 \NewDocumentCommand{\pdvx}{s g}{%
-    % Partial derivative with respect to time
+    % Partial derivative with respect to x
     \IfBooleanTF{#1}
         {\pdv*{x}{#2}}
         {\pdv{x}{#2}}%
 }
 
 \NewDocumentCommand{\pdvy}{s g}{%
-    % Partial derivative with respect to time
+    % Partial derivative with respect to y
     \IfBooleanTF{#1}
         {\pdv*{y}{#2}}
         {\pdv{y}{#2}}%
@@ -83,9 +83,7 @@
   \ensuremath{\underline{\smash{#1}}}
 }
 \NewDocumentCommand{\mat}{m}{%
-  % \ensuremath{\mathsf{#1}}
   \ifcat\noexpand#1\relax
-    % Argument starts with a control sequence (\Gamma, \alpha...)
     #1%
   \else
     \mathsf{#1}%
@@ -99,7 +97,7 @@
 \NewDocumentCommand{\loss}{g}{%
     \def\symbol{\mathcal{J}}
     \IfNoValueTF{#1}
-    {\ensuremath{\symbol}}    % no arg: \partial / \partial t
-    {\ensuremath{\symbol_{\mathrm{#1}}}} % with arg: \partial something / \partial t
+    {\ensuremath{\symbol}}
+    {\ensuremath{\symbol_{\mathrm{#1}}}}
 }
 
