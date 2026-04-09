@@ -12,15 +12,35 @@
     \def\symbol{q}%
     \ensuremath{\symbol}%
 }
+
+\providecommand*{\diff}%
+{\@ifnextchar^{\DIfF}{\DIfF^{}}}
+\def\DIfF^#1{%
+\mathop{\mathrm{\mathstrut d}}%
+\nolimits^{#1}\gobblespace}
+\def\gobblespace{%
+\futurelet\diffarg\opspace}
+\def\opspace{%
+\let\DiffSpace\!%
+\ifx\diffarg(%
+\let\DiffSpace\relax
+\else
+\ifx\diffarg[%
+\let\DiffSpace\relax
+\else
+\ifx\diffarg\{%
+\let\DiffSpace\relax
+\fi\fi\fi\DiffSpace}
+
 \NewDocumentCommand{\dt}{}{%
-    \def\symbol{\mathrm{d}t}%
+    \def\symbol{\diff t}%
     \ensuremath{\symbol}%
 }
 \NewDocumentCommand{\dx}{}{%
-    \def\symbol{\mathrm{d}x}%
+    \def\symbol{\diff x}%
     \ensuremath{\symbol}%
 }
 \NewDocumentCommand{\dy}{}{%
-    \def\symbol{\mathrm{d}y}%
+    \def\symbol{\diff y}%
     \ensuremath{\symbol}%
 }
