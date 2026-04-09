@@ -44,31 +44,27 @@ Motivated by a rewriting of the top layer QG equations, we tackle truncation err
 
 
 \section{Reduced-gravity QG model with parameterized sublayer flow}
-In this section, we present the modelisation strategy that focuses on the surface dynamics while taking into account the sub-surface dynamics. 
-We begin with a reminder of the standard multilayer Quasi-Geostrophic theory and the truncated one-layer reduced-gravity models. 
+In this section, we present a modified reduced-gravity QG model that aims at capturing the surface currents while taking into account the sub-surface dynamics. 
+We begin with a reminder of the standard multilayer Quasi-Geostrophic theory and the truncated one-layer reduced-gravity model. 
+
 \subsection{Multilayer Quasi-Geostrophic theory}
-
 QG dynamics relies on the material conservation of PV by geostrophic flow. Both the PV and the geostrophic flow can be expressed using the stream function which, through the inversion of the elliptic operator mapping stream function to PV, allows recovering the geostrophic flow from the PV itself~\parencite{hoskins1985}.  Multilayer QG, the vertical discretization of the continuously stratified QG equation, is obtained by stacking layers of fluid with constant vertical properties~\parencite{pedlosky1987,vallis2006} inside which PV is conserved. In the following we will recall these equations in a $N$-layer fluid. Using $\vect{\cdot}$ to represent layered fields ($\vect{\chi}= \transpose{\begin{bmatrix}\chi_1, \dots, \chi_N\end{bmatrix}}$), we denote
-
 \begin{itemize}
     \item $\vect{\rho}$ the reference layer densities,
     \item $\vect{H}$ the reference layer thickness,
     \item $\vect{g}$ the reduced gravities ($g_i = g\left(\rho_{i}-\rho_{i-1}\right)/\rho_1$, with the convention $g_1 = g$),
-    \item $\vect{\sf}$ the stream function vector
-    \item $\vect{\pv}$ the PV vector
+    \item $\vect{\sf}$ the stream function vector,
+    \item $\vect{\pv}$ the PV vector.
 \end{itemize}
-\bigskip
-Introducing the horizontal gradient $\grad = \transpose{\begin{bmatrix} \pdvx & \pdvy \end{bmatrix}}$ along with the perpendicular horizontal gradient $\gradperp = \transpose{\begin{bmatrix} -\pdvy & \pdvx \end{bmatrix}}$, the free-surface multilayer QG equations (in the absence of external forcing) in a layer $i$ read
 
-\begin{subequations}
+Introducing the horizontal gradient $\grad = \transpose{\begin{bmatrix} \pdvx & \pdvy \end{bmatrix}}$ along with the perpendicular horizontal gradient $\gradperp = \transpose{\begin{bmatrix} -\pdvy & \pdvx \end{bmatrix}}$, the free-surface multilayer QG equations (in the absence of external forcing) in a layer $i$ read
+\begin{subequations} \label{eq:mlqg}
     \begin{align}
         \pv_i = \lap \sf_i - f_0^2 {\left(\mat{A} \vect{\sf}\right)}_i, \label{def:pv-ml}\\
-        \pdvt{\pv_i} + \gradperp \sf_i \cdot \grad \pv_i = 0\label{def:pv-adv},
+        \pdvt{\pv_i} + \gradperp \sf_i \cdot \grad \pv_i = 0\label{def:pv-adv}.
     \end{align}
 \end{subequations}
-
-where the stretching matrix $\mat{A}$, is given by
-
+Here, the stretching matrix $\mat{A}$, is given by
 \begin{equation}
     \mat{A} = \begin{bmatrix}
             \frac{1}{H_1 g_1} + \frac{1}{H_1 g_2} & -\frac{1}{H_1 g_2} & \cdot & \cdot \\
@@ -77,27 +73,28 @@ where the stretching matrix $\mat{A}$, is given by
             \cdot & \cdot & -\frac{1}{H_N g_N} & \frac{1}{H_N g_N} \\ 
         \end{bmatrix}.
 \end{equation}
+
 One sees that the different layers are coupled with each others via the vortex stretching term in the equation for the PV. 
 In particular, the upper-layer PV is coupled with the second layer, as follows from its definition:
 \begin{equation}\label{def:pv-top-ml}
     \pv_1 = \lap{\sf_1} - \frac{f_0^2}{H_1 g_1} \sf_1 - \frac{f_0^2}{H_1 g_2} \left(\sf_1 - \sf_2\right).
 \end{equation}
 
-From the above set of equation, one can derive an approximate single-layer (so-called reduced-gravity) model by truncating the number of layers to 1 and ignoring the coupling with $\psi_2$ in the PV equation.
-The latter simplification is strictly equivalent to assuming $\Psi_2=0$, \textit{i.e.} a lower layer at rest. 
-The corresponding top-layer PV $\pv^{RG}$ expression thus becomes
+From the above set of equation \eqref{eq:mlqg}, one can derive an approximate single-layer (so-called reduced-gravity) model by truncating the number of layers to 1 and ignoring the coupling with $\sf_2$ in the PV equation.
+The latter simplification is strictly equivalent to assuming $\sf_2=0$, \textit{i.e.} a lower layer at rest. 
+The corresponding top-layer PV, dentoed $\pv^{RG}$ throughout this paper, thus becomes
 \begin{equation}\label{def:pv-rg}
     \pv^{RG} = \lap{\sf_1} - f_0^2 \left(\frac{1}{H_1 g_1} + \frac{1}{H_1 g_2}\right) \sf_1,
 \end{equation}
-which is advected by $\sf_1$, hence the reduced-gravity QG equation is given by
+and the reduced-gravity QG equation, which describes the material conservation of this quantity transported by the flow $\sf_1$, is given by
 \begin{equation} \label{eq:qg-rg}
     \pdvt{\pv^{RG}} +  \gradperp{\sf_1}\cdot \grad{\pv^{RG}} = 0.
 \end{equation}
 The prefactor in the vortex-stretching term in~\cref{def:pv-rg} defines the (inverse square of the) equivalent Rossby deformation radius (wherein the first term is usually negligible as $g_1\gg g_2$).
-In practice, this prefactor is usually replaced using the deformation radius associated with the first baroclinic mode (that is the second eigenvalue of the stretching matrix $\mat{A}$).
+In practice, instead of determining typical layer depths and reduced gravity constants ($H_1, g_1$, etc.), this prefactor is usually replaced using the deformation radius associated with the first baroclinic mode, that is the second eigenvalue of the stretching matrix $\mat{A}$.
 
 \subsection{Reduced-gravity QG model for the assimilation of altimeter data}
-Direct observations through satellite sensing are only able to measure sea surface height (SSH), which can be matched to top layer stream function $\sf_1$. 
+Direct observations through satellite sensing are only able to measure sea surface height (SSH), which can be matched to the top layer stream function $\sf_1$ in the QG framework. 
 Remote sensing alone can not provide direct measurement on the sublayer flow $\sf_2$. 
 As a result, the reduced-gravity model as expressed in~\cref{eq:qg-rg} was used in the first time to perform dynamical interpolation~\parencite{ubelmann2015,ubelmann2016}. 
 Benefiting from the ability of the QG model to generate non-linear dynamics, such method has been able to outperform statistics-based interpolation. 
@@ -107,7 +104,7 @@ In order to address this limitation, the VarDyn framework~\parencite{leguillou20
     \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) = \epsilon.
 \end{equation}
 
-Here, we propose a model for the error by assuming that it corresponds to the impact of the lower-layer dynamics on the surface layer, as mentioned above in the derivation of the reduced-gravity QG equations.
+Here, we propose a model for the error by assuming that this error terms describes the impact of the lower-layer dynamics on the surface layer, following the derivation of the reduced-gravity QG equations above. \todo{Noe: ici, à continuer}
 Indeed,  given the QG PV definition, the top layer PV can be written
 \begin{equation}
     \pv_1 = \pv^{RG} + \frac{f_0^2}{H_1 g_2} \sf_2.
