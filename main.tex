@@ -40,9 +40,10 @@ Using a RG model,~\cite{ubelmann2015} presented the so-called dynamical interpol
 Motivated by a rewriting of the top layer QG equations, we tackle truncation error through a parameterization of the sublayer stream function. We introduce an external forcing in the RG equations which represents the advection of sublayer stream function by the surface flow. In a context of partial surface observations, variational assimilation is then performed to find the sublayer field that allows the most accurate reconstruction of the surface flow. As our method provides a direct estimation for sublayer stream function, we are also able to replace the usual background term of the loss function by a physics-based regularization enforcing multilayer QG dynamics of the surface flow. Method validation is then performed through two experiments: comparison to a three-layer QG model to monitor truncation-only error mitigation, and comparison to a primitive equation simulation to assess the model's reconstruction capabilities of a flower with richer dynamics. 
 
 
-\section{Method}
-
-\subsection{The multilayer quasi-geostrophic equations}
+\section{Reduced-gravity QG model with parameterized sublayer flow}
+In this section, we present the modelisation strategy that focuses on the surface dynamics while taking into account the sub-surface dynamics. 
+We begin with a reminder of the standard multilayer Quasi-Geostrophic theory and the truncated one-layer reduced-gravity models. 
+\subsection{Multilayer Quasi-Geostrophic theory}
 
 QG dynamics relies on the material conservation of PV by geostrophic flow. Both the PV and the geostrophic flow can be expressed using the stream function which, through the inversion of the elliptic operator mapping stream function to PV, allows recovering the geostrophic flow from the PV itself~\parencite{hoskins1985}.  Multilayer QG, the vertical discretization of the continuously stratified QG equation, is obtained by stacking layers of fluid with constant vertical properties~\parencite{pedlosky1987,vallis2006} inside which PV is conserved. In the following we will recall these equations in a $N$-layer fluid. Using $\vect{\cdot}$ to represent layered fields ($\vect{\chi}= \transpose{\begin{bmatrix}\chi_1, \dots, \chi_N\end{bmatrix}}$), we denote
 
@@ -73,45 +74,42 @@ where the stretching matrix $\mat{A}$, is given by
             \cdot & \cdot & -\frac{1}{H_N g_N} & \frac{1}{H_N g_N} \\ 
         \end{bmatrix}.
 \end{equation}
-
-\subsection{The reduced-gravity framework}
-
-Direct observations through satellite sensing are only able to measure sea surface height (SSH), which can be matched to top layer stream function $\sf_1$. Remote sensing alone can not provide direct measurement on the sublayer flow $\sf_2$. However, the top layer PV ($\pv_1$), the dynamics of which govern surface flow, depends on the stream function from layers $1$ and $2$ as
-
+One sees that the different layers are coupled with each others via the vortex stretching term in the equation for the PV. 
+In particular, the upper-layer PV is coupled with the second layer, as follows from its definition:
 \begin{equation}\label{def:pv-top-ml}
     \pv_1 = \lap{\sf_1} - \frac{f_0^2}{H_1 g_1} \sf_1 - \frac{f_0^2}{H_1 g_2} \left(\sf_1 - \sf_2\right).
 \end{equation}
 
-To overcome such limitation, the RG framework considers the sublayer to be at rest, hence $\sf_2 = 0$. The corresponding top-layer PV $\pv^{RG}$ expression yields
-
+From the above set of equation, one can derive an approximate single-layer (so-called reduced-gravity) model by truncating the number of layers to 1 and ignoring the coupling with $\psi_2$ in the PV equation.
+The latter simplification is strictly equivalent to assuming $\Psi_2=0$, \textit{i.e.} a lower layer at rest. 
+The corresponding top-layer PV $\pv^{RG}$ expression thus becomes
 \begin{equation}\label{def:pv-rg}
     \pv^{RG} = \lap{\sf_1} - f_0^2 \left(\frac{1}{H_1 g_1} + \frac{1}{H_1 g_2}\right) \sf_1,
 \end{equation}
-
-which is advected by $\sf_1$, hence,
-
-\begin{equation}
+which is advected by $\sf_1$, hence the reduced-gravity QG equation is given by
+\begin{equation} \label{eq:qg-rg}
     \pdvt{\pv^{RG}} +  \gradperp{\sf_1}\cdot \grad{\pv^{RG}} = 0.
 \end{equation}
+The prefactor in the vortex-stretching term in~\cref{def:pv-rg} defines the (inverse square of the) equivalent Rossby deformation radius (wherein the first term is usually negligible as $g_1\gg g_2$).
+In practice, this prefactor is usually replaced using the deformation radius associated with the first baroclinic mode (that is the second eigenvalue of the stretching matrix $\mat{A}$).
 
-This is the formulation of the RG model which was used in the first time to perform dynamical interpolation~\parencite{ubelmann2015,ubelmann2016}. Benefiting from the ability of the QG model to generate non-linear dynamics, such method has been able to outperform statistics-based interpolation. However, due to the truncated QG equations, significant errors can emerge when performing optimal interpolation using solely the RG model, as pointed out in~\cite{manucharyan2021}. In order to address this limitation, the VarDyn framework~\parencite{leguillou2023,leguillou2025} acknowledges the model error by introducing an external forcing, $\epsilon$, into the advection equation,
-
+\subsection{Reduced-gravity QG model for the assimilation of altimeter data}
+Direct observations through satellite sensing are only able to measure sea surface height (SSH), which can be matched to top layer stream function $\sf_1$. 
+Remote sensing alone can not provide direct measurement on the sublayer flow $\sf_2$. 
+As a result, the reduced-gravity model as expressed in~\cref{eq:qg-rg} was used in the first time to perform dynamical interpolation~\parencite{ubelmann2015,ubelmann2016}. 
+Benefiting from the ability of the QG model to generate non-linear dynamics, such method has been able to outperform statistics-based interpolation. 
+However, due to the truncated QG equations, significant errors can emerge when performing optimal interpolation using solely the RG model, as pointed out in~\cite{manucharyan2021}. 
+In order to address this limitation, the VarDyn framework~\parencite{leguillou2023,leguillou2025} acknowledges the model error by introducing an external forcing, $\epsilon$, into the advection equation,
 \begin{equation}
     \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) = \epsilon.
 \end{equation}
 
-This external forcing may mitigate any source of error, not only the truncation error, but also ageostrophic contribution for instance or any imprecision in the model parameters.
-
-\subsection{Expressing the missing term from the RG equations}
-
-Given the QG PV definition, the top layer PV can be written
-
+Here, we propose a model for the error by assuming that it corresponds to the impact of the lower-layer dynamics on the surface layer, as mentioned above in the derivation of the reduced-gravity QG equations.
+Indeed,  given the QG PV definition, the top layer PV can be written
 \begin{equation}
     \pv_1 = \pv^{RG} + \frac{f_0^2}{H_1 g_2} \sf_2.
 \end{equation}
-
 Using this decomposition into the top layer PV advection equation yields
-
 \begin{subequations}\label{def:qg-rg-adv-corr}
     \begin{align}
         \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) & = - \frac{f_0^2}{H_1 g_2} \left[\pdvt{\sf_2} + \gradperp \sf_1 \cdot \grad \sf_2 \right] \\
@@ -119,65 +117,17 @@ Using this decomposition into the top layer PV advection equation yields
     \end{align}
     
 \end{subequations}
-
 From this expression, we note that the usual RG model advection matches the multilayer formulation when $\Dt*{\sf_2}=0$. Addressing the truncation error of the RG model resumes to emulating the right-hand side of~\cref{def:qg-rg-adv-corr}. Since, $\sf_1$ is the prognostic variable of the model, computing $\Dt*{\sf_2}$ boils down to estimating $\sf_2$. Denoting $\tilde{\sf}_2$ such estimation, we define the corrected RG advection by
-
 \begin{equation}
     \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) = - \frac{f_0^2}{H_1 g_2} \Dt{\tilde{\sf}_2}.
 \end{equation}
 
-In the following, this model will be referred to as RG-SI (Reduced Gravity - Sublayer Inferred). Additionally to explicitly addressing the RG-related truncation error, this method also provides a proxy for the sublayer stream function, through $\tilde{\sf}_2$. Our specific parameterization of $\tilde{\sf}_2$ will be detailed in~\cref{sec:forward-model}. In the forthcoming, all numerical experiments were conducted using a Pytorch implementation of the multilayer QG equations derived from~\cite{thiry2024} (extended to withstand non-zero boundary conditions){\hypersetup{linkcolor=black}\footnote{Code available at \url{https://github.com/grigaut/QG/}}}.
+In the following, this model will be referred to as RG-SI (Reduced Gravity -Sublayer Inferred). Additionally to explicitly addressing the RG-related truncation error, this method also provides a proxy for the sublayer stream function, through $\tilde{\sf}_2$. Our specific parameterization of $\tilde{\sf}_2$ will be detailed in~\cref{sec:forward-model}. In the forthcoming, all numerical experiments were conducted using a Pytorch implementation of the multilayer QG equations derived from~\cite{thiry2024} (extended to withstand non-zero boundary conditions)\footnote{Code available at \url{https://github.com/grigaut/QG/}}.
 
-\section{Variational assimilation}
-
-Provided a set of observations of the surface ${\left(\symbf{y}_i\right)}_{i \in \{1, \dots, N\}}$, evaluated at times ${\left(t_i\right)}_{i \in \{1, \dots, N\}}$, we estimate the state ${\left(\mathcal{M}\left(\theta \ | \ t_i\right)\right)}_{i \in \{1, \dots, N\}}$ using a model $\mathcal{M}$ (RG-SI for example), which depends on the control vector $\theta$. The latter may include any parameter the propagator dynamics depends on (initial and boundary conditions, model parameters\dots). Estimated states are then processed through the observation operator $\mathcal{H}$ in order to be compared to the observations. Finally, variational assimilation reduces to finding
-
-\begin{equation}
-    \theta^\star = \arg \min_{\theta} \sum_{i=1}^{N}{\lVert \symbf{y}_{i} - \mathcal{H} \circ \mathcal{M}\left(\theta \ | \ t_i\right)\rVert}^2_{\mat{R}^{-1}} = \arg \min_{\theta} \loss{obs}\left(\theta\right),
-\end{equation}
-
-with the observation error covariance matrix $\mat{R}$. 
-
-However, there are no guarantees that enough data is available for the minimization problem to be well constrained. Therefore, provided a prior estimate of the control vector, $\theta^b$, and its error covariance matrix, $\mat{B}$, the cost function is usually regularized by penalizing the deviation of $\theta$ from $\theta^b$. Introducing the regularization loss
-
-\begin{equation}
-    \loss{reg}\left(\theta\right) = {\lVert \theta - \theta^b \rVert}^2_{\mat{B}^{-1}},
-\end{equation}
-
-the cost function rewrites
-
-\begin{equation}
-    \loss\left(\theta\right) = \loss{obs}\left(\theta\right) + \loss{reg}\left(\theta\right).
-\end{equation}
-
-Supposing we can estimate the gradient $\grad \loss$ of the loss function, minimization can be performed through gradient descent.  Regarding our specific experimentations, since all models and operation are implemented using Pytorch, we benefit from the library's built-in automatic differentiation~\parencite{paszke2017} to both retrieve loss function gradient and perform a descent algorithm.
-
-
-
-\section{The forward model}\label{sec:forward-model}
-
-\subsection{Sublayer parameterization}
-
-In order to keep a reasonable number of parameters for the parameterization of $\tilde{\sf}_2$, we use a reduced-order space to represent its value. We have decided to express $\tilde{\sf}_2$ over a quite simple space so that RG-SI performances could not be attributed to the structure of the parameterization rather than the actual error model. Therefore, the spatio-temporal behavior of $\tilde{\sf}_2$ is prescribed through a partition of unity of Gaussian envelopes, both in time and space. We denote $N_T$ the number of time-related envelopes and $N_{XY}$ the number of space-related envelopes at a given time $t_i$. Given $i \in \{1,\dots,N_T\}$ and $j \in \{1,\dots,N_{XY}\}$, we define
-
-\begin{subequations}
-    \begin{align}
-        e^T_{i}\left(t\right) & = \exp\left[-{\left(\frac{t-t_i}{\sigma_T}\right)}^2\right], \\
-        e^{XY}_{j}\left(x,y\right) & = \exp\left[-{\left(\frac{x-x_j}{\sigma_X}\right)}^2\right]\exp\left[-{\left(\frac{y-y_j}{\sigma_Y}\right)}^2\right],
-    \end{align}
-\end{subequations}
-
-where $t_i, x_j, y_j$ are the locations of the envelope centers and $\sigma_T, \sigma_X, \sigma_Y$ their standard deviation. Envelopes centers are chosen so that they are evenly spaced (whether in time or space). Details on the determination of the standard deviations can be found in~\cref{appendix:rg-si-parameterization}.
-
-We denote $E^T = \sum_{i=1}^{N_T} e^T_i$ and $E^{XY} = \sum_{i=1}^{N_{XY}} e^{XY}_j$. Using these notations, the overall decomposition of $\tilde{\sf}_2$ at time $t$ and location $\left(x,y\right)$ reads
-
-\begin{equation}
-    \tilde{\sf}_2\left(t,x,y\right) = \frac{\sum_{i=1}^{N_T}\sum_{j=1}^{N_{XY}}  \theta_{i,j} e^T_{i}\left(t\right)e^{XY}_{j}\left(x,y\right)}{E^T\left(t\right) E^{XY}\left(x,y\right)},
-\end{equation}
-
-where the ${\left(\theta_{i,j}\right)} \in \mathbb{R}^{N_T \times N_{XY}}$ are coefficients inferred through cost function minimization. Such parameterization allows representing a smooth field while enabling the emergence of some rather small scale patterns. Additionally, we can easily restore the dynamics of a flow under the RG assumption by setting all coefficients to 0. In the forthcoming, still will be the initial condition considered when instantiating the minimization of the cost function.
-
-\subsection{Physics-based regularization}
+\subsection{Further extensions and remarks of the Reduced-Gravity Sublayer-Inferred QG model}
+\todo{a editer}
+\subsubsection{Approximate lower-layer PV conservation}
+\todo{ré-incorporer une partie de la section "physic-based parameterization"}
 
 Following~\cref{def:pv-adv}, PV advection in the layer 2 reads
 
@@ -211,7 +161,7 @@ It is also worth emphasizing that introducing this regularization does not stric
 
 Furthermore, if we were to assimilate an initial condition $\sf_2^0$ for the bottom layer stream function in two-layer QG model, constraining the minimization problem would yield the question of finding a background estimation for $\sf_2^0$. Once again, two natural choices would be the following: considering $0$ or $\sf_1^0$ (or a linear combination of both, as done by~\cite{cong1995}), hence leaning toward either a surface intensified or a barotropic initial condition for the flow. As the background term would strongly call back the $\sf_2^0$ toward one of these options, the overall dynamics would be notably impacted by this decision. Indeed, according to~\cite{hurlburt1986}, instantiating a two-layer model by setting the initial sublayer field at rest yields not better results regarding surface forecast than a regular RG model, thus emphasizing the need for a precise a priori estimation of sublayer initial state. Our regularization however, does not constrain the value of the sublayer stream function itself but rather its dynamics: it has to somehow satisfy a pseudo-advection of PV in the bottom layer, but as for its value it remains unconstrained. Additionally, this method allows for more flexibility regarding subsurface flow: if improving surface dynamics requires drifting away from the advection of the sublayer (truncated) PV (through the introduction of non-QG patterns in the reconstructed field for example), it can do so. A strictly enforced two-layer QG model would not be able to do so without the introduction of an external forcing term in the sublayer advection equation.
 
-\subsection{Deformation radius correction}\label{sec:deformation-radius-correction}
+\subsubsection{Deformation radius correction}\label{sec:deformation-radius-correction}
 
 Other than the truncation error, incorrect model stratification parameters (in the $H_i$ or the $g_i$) could result in mismatch in the surface flow dynamics. Key characteristics of the flow dynamics are the so-called barotropic and first baroclinic deformation radii, which, in the multilayer QG framework, can be computed from the eigenvalues of the stretching matrix $\mat{A}$. In order to increase the robustness of our two-layer-like model, we wish to allow for baroclinic deformation radius adjustments. Given the diagonalization of the two-layer stretching matrix,
 
@@ -235,6 +185,52 @@ which coincides with the default stretching matrix when $\alpha=0$. The barotrop
 \end{equation}
 
 Our model implementation replaces $\mat{A}$ by $\tilde{\mat{A}}_{\alpha}$ in the usual two-layer QG equations and the parameter $\alpha$ is added in the control vector, granting one additional degree of freedom for the variational assimilation.
+
+\section{Variational assimilation of altimeter data with the RG-SI model}
+
+Provided a set of observations of the surface ${\left(\symbf{y}_i\right)}_{i \in \{1, \dots, N\}}$, evaluated at times ${\left(t_i\right)}_{i \in \{1, \dots, N\}}$, we estimate the state ${\left(\mathcal{M}\left(\theta \ | \ t_i\right)\right)}_{i \in \{1, \dots, N\}}$ using a model $\mathcal{M}$ (RG-SI for example), which depends on the control vector $\theta$. The latter may include any parameter the propagator dynamics depends on (initial and boundary conditions, model parameters\dots). Estimated states are then processed through the observation operator $\mathcal{H}$ in order to be compared to the observations. Finally, variational assimilation reduces to finding
+
+\begin{equation}
+    \theta^\star = \arg \min_{\theta} \sum_{i=1}^{N}{\lVert \symbf{y}_{i} - \mathcal{H} \circ \mathcal{M}\left(\theta \ | \ t_i\right)\rVert}^2_{\mat{R}^{-1}} = \arg \min_{\theta} \loss{obs}\left(\theta\right),
+\end{equation}
+
+with the observation error covariance matrix $\mat{R}$. 
+
+However, there are no guarantees that enough data is available for the minimization problem to be well constrained. Therefore, provided a prior estimate of the control vector, $\theta^b$, and its error covariance matrix, $\mat{B}$, the cost function is usually regularized by penalizing the deviation of $\theta$ from $\theta^b$. Introducing the regularization loss
+
+\begin{equation}
+    \loss{reg}\left(\theta\right) = {\lVert \theta - \theta^b \rVert}^2_{\mat{B}^{-1}},
+\end{equation}
+
+the cost function rewrites
+
+\begin{equation}
+    \loss\left(\theta\right) = \loss{obs}\left(\theta\right) + \loss{reg}\left(\theta\right).
+\end{equation}
+
+Supposing we can estimate the gradient $\grad \loss$ of the loss function, minimization can be performed through gradient descent.  Regarding our specific experimentations, since all models and operation are implemented using Pytorch, we benefit from the library's built-in automatic differentiation~\parencite{paszke2017} to both retrieve loss function gradient and perform a descent algorithm.
+
+
+
+\subsection{The sublayer parameterization in the forward model}\label{sec:forward-model}
+In order to keep a reasonable number of parameters for the parameterization of $\tilde{\sf}_2$, we use a reduced-order space to represent its value. We have decided to express $\tilde{\sf}_2$ over a quite simple space so that RG-SI performances could not be attributed to the structure of the parameterization rather than the actual error model. Therefore, the spatio-temporal behavior of $\tilde{\sf}_2$ is prescribed through a partition of unity of Gaussian envelopes, both in time and space. We denote $N_T$ the number of time-related envelopes and $N_{XY}$ the number of space-related envelopes at a given time $t_i$. Given $i \in \{1,\dots,N_T\}$ and $j \in \{1,\dots,N_{XY}\}$, we define
+
+\begin{subequations}
+    \begin{align}
+        e^T_{i}\left(t\right) & = \exp\left[-{\left(\frac{t-t_i}{\sigma_T}\right)}^2\right], \\
+        e^{XY}_{j}\left(x,y\right) & = \exp\left[-{\left(\frac{x-x_j}{\sigma_X}\right)}^2\right]\exp\left[-{\left(\frac{y-y_j}{\sigma_Y}\right)}^2\right],
+    \end{align}
+\end{subequations}
+
+where $t_i, x_j, y_j$ are the locations of the envelope centers and $\sigma_T, \sigma_X, \sigma_Y$ their standard deviation. Envelopes centers are chosen so that they are evenly spaced (whether in time or space). Details on the determination of the standard deviations can be found in~\cref{appendix:rg-si-parameterization}.
+
+We denote $E^T = \sum_{i=1}^{N_T} e^T_i$ and $E^{XY} = \sum_{i=1}^{N_{XY}} e^{XY}_j$. Using these notations, the overall decomposition of $\tilde{\sf}_2$ at time $t$ and location $\left(x,y\right)$ reads
+
+\begin{equation}
+    \tilde{\sf}_2\left(t,x,y\right) = \frac{\sum_{i=1}^{N_T}\sum_{j=1}^{N_{XY}}  \theta_{i,j} e^T_{i}\left(t\right)e^{XY}_{j}\left(x,y\right)}{E^T\left(t\right) E^{XY}\left(x,y\right)},
+\end{equation}
+
+where the ${\left(\theta_{i,j}\right)} \in \mathbb{R}^{N_T \times N_{XY}}$ are coefficients inferred through cost function minimization. Such parameterization allows representing a smooth field while enabling the emergence of some rather small scale patterns. Additionally, we can easily restore the dynamics of a flow under the RG assumption by setting all coefficients to 0. In the forthcoming, still will be the initial condition considered when instantiating the minimization of the cost function.
 
 \section{Method validation}
 
