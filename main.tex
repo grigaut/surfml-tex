@@ -17,13 +17,24 @@
 
 % \author{}
 
-% \abstract{}
+\abstract{
+    Ocean surface reconstruction through variational assimilation (VA) of partial, satellite-acquired observations is usually performed using reduced-order models. 
+    The reduced-gravity (RG) framework, a truncation of the multilayer quasi-geostrophic (QG) equations, has shown promising reconstructing capabilities.
+    In order to address model errors, a state-of-the-art reconstruction method includes an external forcing in the advection equations of the RG model and optimizes this forcing term during the VA procedure.
+    In this paper, we show that the RG advection equation can be corrected to account specifically for the truncation error, by emulating the material derivative of the sublayer stream function, which can be parameterized and inferred using VA.
+    Since this method yields a proxy for the sublayer stream function, we can compute an approximation of the sublayer potential vorticity (PV) and an estimation of its conservation.
+    We use this approximate conservation as a physics-based regularization term for the VA cost function, replacing the usual background regularization.
+    We also introduce an additional single control parameter for deformation radius correction, allowing the model to mitigate incorrect stratification parameters.
+    Method validation is performed using two different reference datasets, a three-layer QG double-gyre simulation and the eNATL60 simulation, with observations retrieved by an OSSE along SWOT-like tracks.
+    Results show a more than 80\% and 25\% reduction of surface stream function reconstruction error in each experiment (respectively) when compared to a RG model corrected by an external forcing.
+    This study emphasizes the benefits of acknowledging simplification assumptions to design theory-informed error parameterizations to further refine reconstruction capabilities of reduced-order models.
+}
 
 \date{}
 
 \maketitle
 
-Keypoints
+Key Points:
 \begin{itemize}
     \item Enhancing reduced-gravity model reconstruction in the context of data assimilation by acknowledging the truncation error
     \item Introducing a physics-derived regularization term for the cost function to enforce multilayer QG dynamics
@@ -513,7 +524,7 @@ The visual comparison of the surface vorticity field demonstrates the ability of
 \section{Discussion}
 
 In order to improve sea surface reconstruction from altimetric observations using a RG model, we have introduced a new formulation for the model error. This method emulates the sublayer stream function to account for the multilayer-truncation error that inherently comes with the RG assumption. Benefiting from such formulation, it is possible to express sublayer PV along with a diagnostic evaluation of its conservation.
-We then have formulated a variational assimilation framework using such model, and we replaced the usual background regularization by a physics-based regularization enforcing sublayer PV conservation. Using OSSE-sampled surface data from a three-layer QG simulation, we reconstructed surface state through the minimization of the resulting cost function. Both nRMSE scores and visual comparison of the surface vorticity fields showed the benefits of using such error parameterization and regularization as the model: stream function nRMSE showed a 80 to 85\% error reduction when compared to a model corrected through parameterized external forcing. These findings confirm the ability of the method in mitigating truncation error thus highlighting the benefits of refining error parameterization using theoretical knowledge of the dynamics.
+We formulated a variational assimilation framework using such model, and we replaced the usual background regularization by a physics-based regularization enforcing sublayer PV conservation. Using OSSE-sampled surface data from a three-layer QG simulation, we reconstructed surface state through the minimization of the resulting cost function. Both nRMSE scores and visual comparison of the surface vorticity fields showed the benefits of using such error parameterization and regularization as the model: stream function nRMSE showed a 80 to 85\% error reduction when compared to a model corrected through parameterized external forcing. These findings confirm the ability of the method in mitigating truncation error thus highlighting the benefits of refining error parameterization using theoretical knowledge of the dynamics.
 However, despite being able to provide an estimation for the sublayer stream function, comparison to actual sublayer stream function in the three-layer QG experiment yielded moderate results. These results can be explained by the fact that, when correcting surface advection equation, only the sublayer stream function's material derivative is accessed and is therefore better constrained by observations than the actual field is.
 To evaluate our method over richer dynamics we then replicated the same experiment with observations sampled from the eNATL60 simulation. Results analysis has shown that the RG-SI methodology was able to improve surface reconstruction even for non-QG flows yet with a more modest improvement (25 to 35\% in stream function nRMSE). Nonetheless, although our method makes a strong assumption on the dynamics of the flow (as it enforces multilayer QG dynamics), such improvement over a more general error formulation suggest that a significant part of the reconstruction error can be explained by a field advected by the geostrophic flow. However, its identification to the sublayer stream function, in the context of a realistic flow, can be discussed.
 
