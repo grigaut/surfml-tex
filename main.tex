@@ -21,8 +21,8 @@
     Ocean surface reconstruction through variational assimilation (VA) of partial, satellite-acquired observations is usually performed using reduced-order models. 
     The reduced-gravity (RG) framework, a truncation of the multilayer quasi-geostrophic (QG) equations, has shown promising reconstructing capabilities.
     In order to address model errors, a state-of-the-art reconstruction method includes an external forcing in the advection equations of the RG model and optimizes this forcing term during the VA procedure.
-    In this paper, we show that the RG advection equation can be corrected to account specifically for the truncation error, by emulating the material derivative of the sublayer stream function, which can be parameterized and inferred using VA.
-    Since this method yields a proxy for the sublayer stream function, we can compute an approximation of the sublayer potential vorticity (PV) and an estimation of its conservation.
+    In this paper, we show that the RG advection equation can be corrected to account specifically for the truncation error, by inferring the material derivative of the subsurface stream function, which can be parameterized and optimized using VA.
+    Since this method yields a proxy for the subsurface stream function, we can compute an approximation of the subsurface potential vorticity (PV) and an estimation of its conservation.
     We use this approximate conservation as a physics-based regularization term for the VA cost function, replacing the usual background regularization.
     We also introduce an additional single control parameter for deformation radius correction, allowing the model to mitigate incorrect stratification parameters.
     Method validation is performed using two different reference datasets, a three-layer QG double-gyre simulation and the eNATL60 simulation, with observations retrieved by an OSSE along SWOT-like tracks.
