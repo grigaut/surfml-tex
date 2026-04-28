@@ -571,10 +571,10 @@ but such penalization was actually preventing the model from accurately reconstr
 
 
 \begin{equation}
-    \loss{reg}\left(\theta\right) = \sum_{i=1}^{N} {\left( \frac{k_i}{k_1} \right)}^{5/3}{\lVert \theta_{i} \rVert}^2.
+    \loss{reg}\left(\theta\right) = \sum_{i=1}^{N} {\left( \frac{k_i}{k_1} \right)}^{2}{\lVert \theta_{i} \rVert}^2.
 \end{equation}
 
-The choice of such penalization is inspired by Kolmogorov's theory~\parencite{kolmogorov1991}. Indeed, since small scales (large $k_i$) are expected to carry less energy, we increase the strength of the regularization for such scales following a 5/3 power law. Using this regularization has improved the RG-F reconstruction capacities while producing smoother fields. Relative weighting of the regularization cost function in comparison to the observation loss is then adjusted using the hyperparameter $\gamma$ as introduced in~\cref{def:RG-SI-reg}.
+Indeed, since small scales (large $k_i$) are expected to carry less energy, we increase the strength of the regularization for such scales following a 5/3 power law. Using this regularization has improved the RG-F reconstruction capacities while producing smoother fields. Relative weighting of the regularization cost function in comparison to the observation loss is then adjusted using the hyperparameter $\gamma$ as introduced in~\cref{def:RG-SI-reg}.
 
 
 \section{Projected three-layer QG sublayer stream function performances}
