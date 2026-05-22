@@ -260,12 +260,13 @@ QG dynamics relies on the material conservation of PV by geostrophic flow. Both 
 \end{itemize}
 
 Introducing the horizontal gradient $\grad = \transpose{\begin{bmatrix} \pdvx & \pdvy \end{bmatrix}}$ along with the perpendicular horizontal gradient $\gradperp = \transpose{\begin{bmatrix} -\pdvy & \pdvx \end{bmatrix}}$, the free-surface multilayer QG equations (in the absence of external forcing) in the layer $i$ read
-\begin{subequations} \label{eq:mlqg}
-    \begin{align}
-        \pv_i = \lap \sf_i - f_0^2 {\left(\mat{A} \vect{\sf}\right)}_i, \label{def:pv-ml}\\
-        \pdvt{\pv_i} + \gradperp \sf_i \cdot \grad \pv_i = 0\label{def:pv-adv}.
-    \end{align}
-\end{subequations}
+
+
+\begin{eqnarray}\label{eq:mlqg}
+    \pv_i = \lap \sf_i - f_0^2 {\left(\mat{A} \vect{\sf}\right)}_i, \label{def:pv-ml}\\
+    \pdvt{\pv_i} + \gradperp \sf_i \cdot \grad \pv_i = 0\label{def:pv-adv}.
+\end{eqnarray}
+
 Here, the stretching matrix $\mat{A}$, is given by
 \begin{equation}
     \mat{A} = \begin{bmatrix}
@@ -312,13 +313,10 @@ Indeed, given the QG PV definition, the top layer PV can be written
     \pv_1 = \pv^{RG} + \frac{f_0^2}{H_1 g_2} \sf_2.
 \end{equation}
 Using this decomposition into the top layer PV advection equation~\eqref{def:pv-adv} yields
-\begin{subequations}\label{def:qg-rg-adv-corr}
-    \begin{align}
-        \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) & = - \frac{f_0^2}{H_1 g_2} \left[\pdvt{\sf_2} + \gradperp \sf_1 \cdot \grad \sf_2 \right] \\
-        & = - \frac{f_0^2}{H_1 g_2} \Dt{\sf_2}.
-    \end{align}
-    
-\end{subequations}
+\begin{eqnarray}\label{def:qg-rg-adv-corr}
+    \pdvt{\pv^{RG}} + J\left(\sf_1, \pv^{RG}\right) & = & - \frac{f_0^2}{H_1 g_2} \left[\pdvt{\sf_2} + \gradperp \sf_1 \cdot \grad \sf_2 \right] \\
+    && = - \frac{f_0^2}{H_1 g_2} \Dt{\sf_2}.
+\end{eqnarray}
 From this expression, we note that the usual RG model advection matches the multilayer formulation when $\Dt*{\sf_2}=0$. 
 Addressing the truncation error of the RG model resumes to emulating the right-hand side of~\cref{def:qg-rg-adv-corr}. 
 Since $\sf_1$ is the prognostic variable of the model, computing $\Dt*{\sf_2}$ boils down to estimating $\sf_2$. Denoting $\tilde{\sf}_2$ such estimation, we define the corrected RG advection by
@@ -354,12 +352,10 @@ Other than the truncation error, incorrect model stratification parameters (the 
 
 where $\lambda_{\rightleftarrows}$ is the baroclinic-related eigenvalue and $\lambda_{\rightrightarrows}$ the barotropic one, and $\mat{C}_{\mathrm{M2L}}$ (resp., $\mat{C}_{\mathrm{L2M}}$) the modes to layers (resp., layers to modes) passage matrix. The baroclinic radius correction is performed by introducing the parameter $\alpha$, and the modified stretching matrix,
 
-\begin{subequations}
-    \begin{align}
-        \tilde{\mat{A}}_{\alpha} & = \mat{C}_{\mathrm{M2L}}\begin{bmatrix}\left(1+\alpha\right)\lambda_{\rightleftarrows} & 0 \\ 0 & \lambda_{\rightrightarrows}\end{bmatrix}\mat{C}_{\mathrm{L2M}}, \\
-        & = \mat{A} + \alpha\lambda_{\rightleftarrows}\mat{C}_{\mathrm{M2L}}\begin{bmatrix}1 & 0 \\ 0 & 0\end{bmatrix}\mat{C}_{\mathrm{L2M}},
-    \end{align}
-\end{subequations}
+\begin{eqnarray}
+    \tilde{\mat{A}}_{\alpha} & = & \mat{C}_{\mathrm{M2L}}\begin{bmatrix}\left(1+\alpha\right)\lambda_{\rightleftarrows} & 0 \\ 0 & \lambda_{\rightrightarrows}\end{bmatrix}\mat{C}_{\mathrm{L2M}}, \\
+    && = \mat{A} + \alpha\lambda_{\rightleftarrows}\mat{C}_{\mathrm{M2L}}\begin{bmatrix}1 & 0 \\ 0 & 0\end{bmatrix}\mat{C}_{\mathrm{L2M}},
+\end{eqnarray}
 
 which coincides with the default stretching matrix when $\alpha=0$. The barotropic deformation radius then remains unchanged as it is linked to the total depth which can be quite easily approximated whereas the baroclinic deformation radius, $L_{\rightleftarrows}$ becomes
 
@@ -375,22 +371,14 @@ This section describes how the model presented above is implemented in a variati
 \subsection{General variational formulation}\label{sec:va}
 Provided a set of (partial) observations of the surface stream function $\left( \Psi_i \right)$ retrieved at times $\left( t_i \right)$, $i \in \{1, \dots, N\}$, we emulate the surface state using a model $\mathcal{M}_{\theta}$ (RG-SI for example), which depends on the control vector $\theta$. The latter may include any parameter the propagator dynamics depends on (initial and boundary conditions, model parameters\dots). Estimated states are then processed through the observation operator $\mathcal{H}$ in order to be compared to the observations. Finally, variational assimilation reduces to finding $\theta^\star$ such that it minimizes the observation cost function, hence
 
+
 \begin{equation}
-    \theta^\star = \arg \min_{\theta} \sum_{i=1}^{N}{\lVert \Psi_i - \mathcal{H}_i \circ \mathcal{M}_{\theta}\left( t_i\right)\rVert}^2_{\mat{R}^{-1}} = \arg \min_{\theta} \loss{obs}\left(\theta\right),
+    \theta^\star = \arg \min_{\theta} \underbrace{\sum_{i=1}^{N}{\lVert \Psi_i - \mathcal{H}_i \circ \mathcal{M}_{\theta}\left( t_i\right)\rVert}^2_{\mat{R}^{-1}}}_{\displaystyle \loss{obs}\left(\theta\right)} + \underbrace{{\lVert \theta - \theta^b \rVert}^2_{\mat{B}^{-1}}}_{\displaystyle \loss{reg}\left(\theta\right)} ,
 \end{equation}
 
-with the observation error covariance matrix $\mat{R}$ (in the experiments from~\cref{sec:method-validation}, this matrix is taken as the identity, up to a multiplicative factor for normalization purpose).
+where $\mat{R}$ and $\mat{B}$ are the observation error covariance and the background error covariance, respectively, wehreas $\theta^b$ (called the background) is a prior estimate of the control vector. The background term $\loss{reg}$ regularizes the optimization problem by penalizing the deviation of $\theta$ from $\theta^b$.
 
-However, there are no guarantees that enough data is available for the minimization problem to be well constrained. Therefore, provided a prior estimate of the control vector, $\theta^b$ (called the background), and its error covariance matrix, $\mat{B}$, the cost function is usually regularized by penalizing the deviation of $\theta$ from $\theta^b$. Introducing the so-called background regularization cost function
-\begin{equation}
-    \loss{reg}\left(\theta\right) = {\lVert \theta - \theta^b \rVert}^2_{\mat{B}^{-1}},
-\end{equation}
-the cost function rewrites
-\begin{equation}
-    \loss\left(\theta\right) = \loss{obs}\left(\theta\right) + \loss{reg}\left(\theta\right).
-\end{equation}
-
-Retrieving a relevant estimation for $\theta^b$ can already be a challenge of itself and should not be overlooked. Indeed, when performing data assimilation using multilayer QG models, it is often difficult to obtain a precise \textit{a priori} estimation for the subsurface flow that can be used as a background term. To overcome this limitation, one could penalize deviation from 0 or from the initial surface state, $\sf_1^0$, but doing so would strongly call back the initial condition toward either a surface intensified or a barotropic flow. Since this background term is solely there to ensure the well-posedness of the minimization problem, the background regularization can be replaced by any cost function that would enforce an \textit{a priori} knowledge on the dynamics. For instance, penalizing the stream function's second derivatives from deviating from 0 has been proven to be effective in regularizing the assimilation problem as it enforces the smoothness of the fields~\cite{vogeler1995,cong1995}.
+Retrieving a relevant estimation for $\theta^b$ can already be a challenge of itself and should not be overlooked. Indeed, when performing data assimilation using multilayer QG models, it is often difficult to obtain a precise \textit{a priori} estimation for the subsurface flow that can be used as a background term.   Since this background term is solely there to ensure the well-posedness of the minimization problem, the background regularization can be replaced by any cost function that would enforce an \textit{a priori} knowledge on the dynamics. For instance, penalizing the stream function's second derivatives from deviating from 0 has been proven to be effective in regularizing the assimilation problem as it enforces the smoothness of the fields~\cite{vogeler1995,cong1995}.
 
 However, this does not replace the need for an actual initial condition to start assimilating from. To overcome this difficulty,~\citeA{cong1998} decided to use a preparation step, prior to performing variational assimilation, in order to find a suitable linear combination of $\sf_1^0$ and $0$ to instantiate the model with. Still, not only does an appropriate initial condition help the assimilation algorithm converges towards a minimum~\cite{morrow1995}, it also helps the model in emulating relevant dynamics. Indeed, as shown by~\citeA{hurlburt1986}, instantiating a two-layer primitive equation model using a RG-like condition (hence inert bottom layer at instantiation) yields little to no better results than using the equivalent one-layer reduced-gravity primitive equation model. Hence, in the absence of model error correction, increasing the model's complexity does not suffice to mitigate inaccurate initial conditions.
 
@@ -404,12 +392,10 @@ In order to keep a reasonable number of parameters for the expression of $\tilde
 We express $\tilde{\sf}_2$ over a quite simple space -- namely a partition of unity of space-time Gaussian envelopes --, so that RG-SI performances could not be attributed to the structure of the parameterization rather than the actual error model.
 We denote $N_T$ the number of time-related envelopes and $N_{XY}$ the number of space-related envelopes at a given time $t_i$. 
 Given $i \in \{1,\dots,N_T\}$ and $j \in \{1,\dots,N_{XY}\}$, we define
-\begin{subequations}
-    \begin{align}
-        e^T_{i}\left(t\right) & = \exp\left[-{\left(\frac{t-t_i}{\sigma_T}\right)}^2\right], \\
-        e^{XY}_{j}\left(x,y\right) & = \exp\left[-{\left(\frac{x-x_j}{\sigma_X}\right)}^2\right]\exp\left[-{\left(\frac{y-y_j}{\sigma_Y}\right)}^2\right],
-    \end{align}
-\end{subequations}
+\begin{eqnarray}
+        e^T_{i}\left(t\right) & = & \exp\left[-{\left(\frac{t-t_i}{\sigma_T}\right)}^2\right], \\
+        e^{XY}_{j}\left(x,y\right) & = &  \exp\left[-{\left(\frac{x-x_j}{\sigma_X}\right)}^2\right]\exp\left[-{\left(\frac{y-y_j}{\sigma_Y}\right)}^2\right],
+\end{eqnarray}
 where $t_i, x_j, y_j$ are the locations of the envelope centers and $\sigma_T, \sigma_X, \sigma_Y$ their standard deviations. Envelopes centers are chosen so that they are evenly spaced (whether in time or space). Details on the determination of the standard deviations can be found in~\cref{appendix:rg-si-parameterization}.
 We denote $E^T = \sum_{i=1}^{N_T} e^T_i$ and $E^{XY} = \sum_{i=1}^{N_{XY}} e^{XY}_j$. Using these notations, the overall decomposition of $\tilde{\sf}_2$ at time $t$ and location $\left(x,y\right)$ reads
 \begin{equation}
@@ -448,11 +434,11 @@ Numerical experiments were conducted using the Grid'5000 testbed~\cite{balouek20
 
 \section{Method validation}\label{sec:method-validation}
 
-We have considered two observing system simulation experiment (OSSE) validation experiments. In the first one, we have set a double-gyre experiment using a three-layer QG model (QG3L). The reconstruction error from the RG model (dynamical interpolation situation) is mostly explained by the truncation of the QG equations. Within this framework, we can assess the ability of the RG-SI model in reconstructing top layer dynamics and compare its performances with a RG model with no error correction (RG0) and a RG model whose error is prescribed though an external forcing, RG-F (RG-Forced). Two variants of this setup have been explored. One where model parameters (reference layer depth, reduced gravity values\dots) are the same in the reference QG model and in the RG counterparts. Not only does this configuration confine the error sources to truncation error, it also allows for a fair comparison of $\tilde{\sf}_2$ and $\sf_2$. In the other variant, model parameters are modified to assess the robustness of each of the models when dealing with incorrect baroclinic deformation radius. The second validation experiment uses reference surface fields from the high-resolution, realistic simulation eNATL60 simulation~\cite{brodeau2020}, which is based on NEMO~\cite{madec2024} an includes realistic forcings and bathymetry. This experiment investigates the capability of our model in depicting a flow that present ageostrophic, complex and rich dynamical features.
+We have considered two observing system simulation experiment (OSSE) validation experiments. In the first one, we have set a double-gyre experiment using a three-layer QG model (QG3L). The reconstruction error from the RG model (dynamical interpolation situation) is mostly explained by the truncation of the QG equations. The second validation experiment uses reference surface fields from the high-resolution, realistic simulation eNATL60 simulation~\cite{brodeau2020}, which is based on NEMO~\cite{madec2024} an includes realistic forcings and bathymetry. This experiment investigates the capability of our model in depicting a flow that present ageostrophic, complex and rich dynamical features.
 
 \subsection{Configuration of OSSEs}
 
-As this work focuses on introducing a new parameterization to reduce model error, we have decided to only consider such parameterization in the control vector. Indeed, since all tested frameworks (RG0, RG-F, RG-SI) share identical initial and boundary conditions, differences in performances only result from model error and its correction. Ideal initial and boundary conditions are therefore retrieved from the surface flow of the reference simulation. Furthermore, the estimation of initial and boundary conditions through variational assimilation has already been widely investigated~\cite{cong1998,zou1995,gunson1996,seiler1993,ayoub2006}, suggesting that our methodology could quite easily be adapted to a more realistic data assimilation configuration.
+As this work focuses on introducing a new parameterization to reduce model error, we have decided to only consider such parameterization in the control vector. Ideal initial condition (IC) and boundary conditions (BC) are therefore retrieved from the surface flow of the reference simulation. Since all tested frameworks (RG0, RG-F, RG-SI) share identical IC and BC, differences in performances only result from model error and its correction. Although IC and BC can be included in the control vector to further extend the scope of this work, we have decided not to do so in the present study as the estimation of IC and BC through variational assimilation is already a field of study of its own~\cite{cong1998,zou1995,gunson1996,seiler1993,ayoub2006}.
 
 In both experiments, observations are drawn from the surface using an OSSE that simulates SWOT-like sampling tracks. Satellite track example can be found in~\cref{fig:satellite-track}, along with the cumulative passages of the tracks over a 20-days period.
 
@@ -481,9 +467,34 @@ Therefore, perfect field reconstruction would result in a nRMSE score of 0 where
 
 
 \subsection{3-layer QG double gyre}
+
+In the following the reference surface fields are established using a three-layer QG simulation in a double-gyre configuration. Within this framework, we can assess the ability of the RG-SI model in reconstructing top layer dynamics and compare its performances with a RG model with no error correction (RG0) and a RG model whose error is prescribed though an external forcing, RG-F (RG-Forced). Two variants of this setup have been explored. One where model parameters (reference layer depth, reduced gravity values\dots) are the same in the reference QG model and in the RG counterparts. Not only does this configuration confine the error sources to truncation error, it also allows for a fair comparison of $\tilde{\sf}_2$ and $\sf_2$. In the other variant, model parameters are modified to assess the robustness of each of the models when dealing with incorrect baroclinic deformation radius. Since the reference emulates the dynamics over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}{\kilo\meter}$ domain, we have decided to perform data assimilation on subdomains of the said area. We selected two $\qty{640}{\kilo\meter}$ x $\qty{1280}{\kilo\meter}$ zones, Z1, Z2, presenting different dynamical features.
+
+\begin{figure}[H]
+    \centering
+    \begin{center}
+        \includesvg[width=0.7\textwidth]{assets/images/zones.svg}
+    \end{center}
+    \caption{Detail of the 4 zones of the three-layer QG experiment.}
+\end{figure}
+
+Z1 is at the core of the eastward jet and presents a surface intensified dynamics whereas on Z2 the barotropic component of the flow is stronger. In both zones, the OSSE follows the same tracks, observing 13243 gridpoints. Number of control parameters for the different models are detailed in the following table
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lcccc}
+          & RG-SI & RG-SI ($\alpha = 0$) & RG-F & RG0 \\
+        \hline
+        Control vector size &  6322 & 6321 & 8512 & 0 \\
+        \hline
+    \end{tabular}
+    \caption{Comparison of the control vector size for the different models in the QG3L experiment.}\label{tab:qg3l-control-vector-size}
+\end{table}
+
+
 \subsubsection{Experimental set-up}
 
-All models were configured with the same time and space resolutions. Regarding stratification parameters, RG0 has been implemented as a one-layer QG model with $g = g_1 g_2/(g_1+g_2)$ so that it matches the parameters of a truncation of the multilayer equations (see~\cref{def:pv-rg}). RG-SI and RG-F have been instantiated so that they share the same deformation radius, namely $\qty{29}{\kilo\meter}$, which corresponds to the baroclinic deformation radius of the two-layer QG model matching the parameters of the reference three-layer QG on the top two-layers. Such deformation radius value is also similar to the one described in~\citeA{leguillou2023}. All model parameters are detailed in~\cref{tab:qg3l-model-parameters}.
+Both the reference and the models (RG-SI, RG-F, RG0) were configured with the same time and space resolutions. Regarding stratification parameters, RG0 has been implemented as a one-layer QG model with $g = g_1 g_2/(g_1+g_2)$ so that it matches the parameters of a truncation of the multilayer equations (see~\cref{def:pv-rg}). RG-SI and RG-F have been instantiated so that they share the same deformation radius, namely $\qty{29}{\kilo\meter}$, which corresponds to the baroclinic deformation radius of the two-layer QG model matching the parameters of the reference three-layer QG on the top two-layers. Such deformation radius value is also similar to the one described in~\citeA{leguillou2023}. All model parameters are detailed in~\cref{tab:qg3l-model-parameters}.
 
 \begin{table}[H]
     \centering
@@ -518,36 +529,11 @@ Since the reference simulation is forced by wind to display a double-gyre, we al
 
 where $F$ represent the additional forcing that depends on the framework,
 
-\begin{subequations}
-    \begin{align}
-        F_{\mathrm{RG}} & = 0, \\
-        F_{\mathrm{RG-F}} & = \epsilon, \\
-        F_{\mathrm{RG-SI}} & = \frac{-f_0^2}{H_1 g_2}\Dt{\tilde{\sf}_2}.
-    \end{align}
-\end{subequations}
-
-As the reference was established over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}{\kilo\meter}$ domain, we have decided to focus on subdomains of the said area. We selected two $\qty{640}{\kilo\meter}$ x $\qty{1280}{\kilo\meter}$ zones, Z1, Z2, presenting different dynamical features.
-
-\begin{figure}[H]
-    \centering
-    \begin{center}
-        \includesvg[width=0.7\textwidth]{assets/images/zones.svg}
-    \end{center}
-    \caption{Detail of the 4 zones of the three-layer QG experiment.}
-\end{figure}
-
-Z1 is at the core of the eastward jet and presents a surface intensified dynamics whereas on Z2 the barotropic component of the flow is stronger. In both zones, the OSSE follows the same tracks, observing 13243 gridpoints. Number of control parameters for the different models are detailed in the following table
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{lcccc}
-          & RG-SI & RG-SI ($\alpha = 0$) & RG-F & RG0 \\
-        \hline
-        Control vector size &  6322 & 6321 & 8512 & 0 \\
-        \hline
-    \end{tabular}
-    \caption{Comparison of the control vector size for the different models in the QG3L experiment.}\label{tab:qg3l-control-vector-size}
-\end{table}
+\begin{eqnarray}
+    F_{\mathrm{RG}} & = & 0, \\
+    F_{\mathrm{RG-F}} & = & \epsilon, \\
+    F_{\mathrm{RG-SI}} & = & \frac{-f_0^2}{H_1 g_2}\Dt{\tilde{\sf}_2}.
+\end{eqnarray}
 
 Both RG-F and RG-SI regularizations are scaled through an hyperparameter ($\gamma$). The value of $\gamma$ has been taken constant over all areas and assimilation periods. Regarding RG-SI, its value has been fitted so that regularization cost function on first assimilation step was around 1\%-1‰ of the observation loss in all areas and periods. Therefore, cost function is dominated by the observation error at first, which is then reduced in priority. Regarding RG-F, the value $\gamma$ has been empirically chosen so that the model would perform as best as possible while not displaying non-physical small-scale artefacts in the reconstructed fields (which it tends to do in the absence of regularization).
 
@@ -856,13 +842,11 @@ This new method highlights the benefits of deriving model error parameterization
 
 Gaussian envelopes' standard deviations are chosen so that consecutive envelopes cross at $\sqrt{2}$. Hence, considering consecutive time-related (resp., space-related) envelopes to be distant from $\Delta t$ (resp., $\Delta x$ and $\Delta y$), their standard deviations are given by
 
-\begin{subequations}
-    \begin{align}
-        \sigma_T & = \frac{\Delta t}{\sqrt{2\ln{2}}}, \\
-        \sigma_X & = \frac{\Delta x}{\sqrt{2\ln{2}}}, \\
-        \sigma_Y & = \frac{\Delta y}{\sqrt{2\ln{2}}}.
-    \end{align}
-\end{subequations}
+\begin{eqnarray}
+        \sigma_T & = & \frac{\Delta t}{\sqrt{2\ln{2}}}, \\
+        \sigma_X & = & \frac{\Delta x}{\sqrt{2\ln{2}}}, \\
+        \sigma_Y & = & \frac{\Delta y}{\sqrt{2\ln{2}}}.
+\end{eqnarray}
 
 \section{RG-F implementation}\label{appendix:rg-f-implementation}
 
