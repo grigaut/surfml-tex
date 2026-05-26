@@ -1,2 +1,5 @@
 Gaétan
 Rigaut
+RG-F
+RG-SI
+nRMSE
