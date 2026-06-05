@@ -146,7 +146,7 @@
 % \end{keypoints}
 
 \begin{keypoints}
-    \item Enhancing reduced-gravity model reconstruction in the context of data assimilation by acknowledging the truncation error
+    \item Enhancing reduced-gravity model reconstruction in the context of data assimilation using a theory-motivated model error parameterization
     \item Introducing a physics-derived regularization term for the cost function to enforce multilayer QG dynamics
     \item Improving the robustness of the model by introducing a deformation radius correcting parameter in the control vector
 \end{keypoints}
@@ -173,14 +173,14 @@
 %% \begin{abstract} starts the second page
 
 \begin{abstract}
-    Ocean surface reconstruction through variational assimilation (VA) of partial, satellite-acquired observations is usually performed using reduced-order models. 
-    The reduced-gravity (RG) framework, a truncation of the multilayer quasi-geostrophic (QG) equations, has shown promising reconstructing capabilities.
+    Ocean surface reconstruction through variational assimilation (VA) of partial, satellite-acquired observations is often performed using reduced-order models. 
+    The quasi-geostrophic reduced-gravity (RG) framework, a truncation of the multilayer quasi-geostrophic equations, has shown promising reconstructing capabilities.
     In order to address model errors, a state-of-the-art reconstruction method includes an external forcing in the advection equations of the RG model and optimizes this forcing term during the VA procedure.
     In this paper, we show that the RG advection equation can be corrected to account specifically for the truncation error by inferring the material derivative of the subsurface stream function, which can be parameterized and optimized using VA.
-    Since this method yields a proxy for the subsurface stream function, we can compute an approximation of the subsurface potential vorticity (PV) and an estimation of its conservation.
+    Since this method yields a proxy for the subsurface stream function, we can compute an approximation of the subsurface potential vorticity and an estimation of its conservation.
     We use this approximated conservation as a physics-based regularization term for the VA cost function, replacing the usual background regularization.
     We also introduce a single additional control parameter for deformation radius correction, allowing the model to mitigate incorrect stratification parameters.
-    Method validation is performed using two different reference datasets, a three-layer QG double-gyre simulation and the eNATL60 simulation, both with observations retrieved by an OSSE along SWOT-like tracks.
+    Method validation is performed using two different reference datasets, a three-layer quasi-geostrophic double-gyre simulation and the eNATL60 simulation, both with observations retrieved by an OSSE along SWOT-like tracks.
     Results show a more than 80\% and 25\% reduction of surface stream function reconstruction error in each experiment (respectively) when compared to a RG model corrected by an external forcing.
     This study emphasizes the benefits of acknowledging simplification assumptions to design theory-informed error parameterizations to further refine reconstruction capabilities of reduced-order models.
 \end{abstract}
@@ -223,7 +223,7 @@ Knowing the ocean surface state is essential for many applications, among which 
 
 
 
-\section{Introduction}
+\section{Introduction}\label{sec:introduction}
 
 In physical oceanography, the majority of available data is acquired by satellites that cannot measure the interior ocean state. Still, the constellation of space-borne altimetric sensors is not dense enough to provide a full coverage of the globe. In order to provide estimations of the ocean state from partial observations, reconstructions method have been investigated since the first altimetric mission was launched in the late 1970s. Among them, the optimal interpolation method~\cite{rienecker1991,traon1998}, a purely statistical method that solely uses data was applied to reconstruct surface state. This method, as of today, is still at the basis of the DUACS product which remains a widely used real-time gridded ocean product.
 
@@ -233,19 +233,17 @@ Around the mid-latitudes, a simplified framework of choice is the quasi-geostrop
 
 Studies in the late 1980s used QG systems to perform data assimilation. Some methods consisted of updating the surface state with observations and then allowing the model's dynamics to adjust to the observation\nobreak{}-\nobreak{}imposed circulation~\cite{haines1991}. However, to produce satisfactory reconstructions, these methods required extensive spin-up times and therefore significant amount of data. Other methods focused on using statistical information on the flow dynamics to project surface observations onto empirical vertical modes~\cite{mey1987}. Although promising, these methods required many subsurface observations to infer reliable statistics thus preventing their application to the wide ocean.
 
-Among DA methods, variational assimilation (VA) has been successfully employed to reducing observations to numerical simulation mismatches~\cite{gunson1996,cong1998,zou1995,vogeler1995,vogeler1999}. VA consists in performing successive iterations of a numerical model, from which reconstruction error is assessed. The backpropagation of the error using the adjoint model of the numerical code~\cite{errico1997} then allows refining the control parameters (initial condition for example) from an \textit{a priori} estimation to reduce such error. Despite the (significant) computation cost of determining and storing the adjoint model, VA is still widely used in operational assimilation software~\cite{martin2025}.
-
-Performing VA using a multilayer QG simulation has been widely investigated in the late 1980s~\cite{cong1998,vogeler1995,vogeler1999}. But it has been pointed out~\cite{vogeler1995,vogeler1999,hurlburt1986,morrow1995} that, in the absence of direct subsurface observations, an accurate first guess of the initial condition was required to further refine surface dynamics reconstruction.
+Among DA methods, variational assimilation (VA) has been successfully employed to reduce discrepancies between observations and numerical simulations~\cite{gunson1996,cong1998,zou1995,vogeler1995,vogeler1999}. VA consists in performing successive iterations of a numerical model, from which reconstruction error is assessed. The backpropagation of the error using the adjoint model of the numerical code~\cite{errico1997} then allows refining the control parameters (initial condition for example) from an \textit{a priori} estimation to reduce such error. Despite the (significant) computation cost of determining and storing the adjoint model, VA is still widely used in operational assimilation software~\cite{martin2025}. Performing VA using a multilayer QG simulation has been widely investigated in the late 1980s~\cite{cong1998,vogeler1995,vogeler1999}. But it has been pointed out~\cite{vogeler1995,vogeler1999,hurlburt1986,morrow1995} that, in the absence of direct subsurface observations, an accurate first guess of the initial condition was required to further refine surface dynamics reconstruction.
 
 With the recent launch of the Surface Water and Ocean Topography (SWOT) mission~\cite{fu2024} has come the perspective of sea surface reconstruction with unprecedented resolution~\cite{benkiran2026}. This satellite provides data over wide swaths, but its 21-day repeat cycle results in significant gaps in the collected data, emphasizing the need for interpolation techniques. Therefore, both the lack of detailed subsurface direct observations and the motivation of only reconstructing surface flow have motivated the use of reduced-gravity (RG) QG models in data assimilation. This framework is directly derived from the multilayer one by considering deep ocean flow to be at rest. This additional simplification offers an evolution equation for the surface flow without requiring any information on the subsurface state. 
 
 Using a RG model,~\citeA{ubelmann2015} presented a so-called dynamical interpolation method which refines optimal interpolation reconstruction by benefitting from the ability of the model to render non-linear dynamics~\cite{ubelmann2016}. In order to account for any source of error in the RG model, the VarDyn framework~\cite{leguillou2023,leguillou2025} introduces an external forcing into the RG advection equation. Such forcing is estimated through VA to approach the rich and complex dynamics of the ocean surface. However, in both methods remains the approximation that the flow is at rest below the ocean surface.
 
-In the present study, we rewrite the top layer equation of the multilayer QG framework to derive a truncation\nobreak -\nobreak aware RG equation. This formulation is based on the introduction of an additional forcing composed of the sublayer stream function's material derivative. VA is then performed to find the sublayer field that allows for the most accurate reconstruction of the surface flow. As our method provides a direct estimation for the sublayer stream function, we are also able to replace the usual background term of the cost function by a physics-based regularization enforcing PV conservation in the sublayer. Additionally, we introduce a single-parameter deformation radius correction to help the model handle incorrect stratification parameters.
-In order to validate our method, we perform two experiments. We first use a three-layer QG double-gyre simulation as reference to monitor truncation-only error mitigation and discuss the relevancy of the parameterized field as a proxy for the sublayer stream function. Then, we use a primitive equation simulation to assess the model's reconstruction capabilities of a flow with richer dynamics.
+In the present study, we rewrite the top layer equation of the multilayer QG framework to derive a truncation\nobreak -\nobreak aware RG equation in~\cref{sec:rg-si-model}. This formulation is based on the introduction of an additional forcing composed of the sublayer stream function's material derivative. VA is then performed to find the sublayer field that allows for the most accurate reconstruction of the surface flow. Additionally, in~\cref{sec:deformation-radius-correction}, we introduce a single-parameter deformation radius correction to help the model handle incorrect stratification parameters. As our method provides a direct estimation for the sublayer stream function, we are also able to replace the usual background term of the cost function by a physics-based regularization enforcing PV conservation in the sublayer (\cref{sec:reg}).
+In order to validate our method, we perform two experiments. In~\cref{sec:qg3l}, we first use a three-layer QG double-gyre simulation as reference to monitor truncation-only error mitigation and discuss the relevancy of the parameterized field as a proxy for the sublayer stream function. Then, in~\cref{sec:enatl60}, we use a primitive equation simulation to assess the model's reconstruction capabilities of a flow with richer dynamics.
 
 
-\section{Reduced-gravity QG model with parameterized sublayer flow}
+\section{Reduced-gravity QG model with parameterized sublayer flow}\label{sec:rg-si-model}
 In this section, we present a modified reduced-gravity QG model that aims at capturing the surface currents while taking into account the sub-surface dynamics. 
 We begin with a reminder of the standard multilayer Quasi-Geostrophic theory and the truncated one-layer reduced-gravity model. 
 
@@ -373,7 +371,7 @@ Our model implementation replaces $\mat{A}$ by $\tilde{\mat{A}}$ in the usual tw
     \tilde{\pv}_2 & = & \lap{\tilde{\sf}_2} - f_0^2 \left(\tilde{\mat{A}}_{2,1} \sf_1 + \tilde{\mat{A}}_{2,2} \tilde{\sf}_2\right).
 \end{eqnarray}
 
-\section{Variational assimilation of altimeter data with the RG-SI model}
+\section{Variational assimilation of altimeter data with the RG-SI model}\label{sec:va-framework}
 This section describes how the model presented above is implemented in a variational assimilation framework for inverting surface altimeter data, starting with a brief presentation of the cost function used, and followed by a description of the various modeling strategies applied to the RG-SI model.
 
 \subsection{General variational formulation}\label{sec:va}
@@ -415,7 +413,7 @@ This decomposition allows us to represent a smooth field while enabling the emer
 Additionally, we can easily restore the dynamics of a flow under the RG assumption by setting all coefficients to 0. 
 In the forthcoming, this will be the initial condition considered when instantiating the variational assimilation procedure.
 
-\subsubsection{Physics-based regularization}
+\subsubsection{Physics-based regularization}\label{sec:reg}
 Efficiency of the optimization is further improved by using a physics-based regularization based on an approximate form of the conservation of PV, as introduced in~\cref{sec:PV2reg}.
 The corresponding regularization term reads
 \begin{equation}
@@ -442,7 +440,7 @@ Numerical experiments were conducted using the Grid'5000 testbed~\cite{balouek20
 
 \section{Method validation}\label{sec:method-validation}
 
-We have considered two observing system simulation experiment (OSSE) validation experiments. In the first one, we have set a double-gyre experiment using a three-layer QG model (QG3L). The reconstruction error from the RG model (dynamical interpolation situation) is mostly explained by the truncation of the QG equations. The second validation experiment uses reference surface fields from the high-resolution, realistic simulation eNATL60 simulation~\cite{brodeau2020}, which is based on NEMO~\cite{madec2024} an includes realistic forcings and bathymetry. This experiment investigates the capability of our model in depicting a flow that present ageostrophic, complex and rich dynamical features.
+We have considered two observing system simulation experiment (OSSE) validation experiments. In the first one, we have set a double-gyre experiment using a three-layer QG model (QG3L). The reconstruction error from the RG model is mostly explained by the truncation of the QG equations. The second validation experiment uses reference surface fields from the high-resolution, realistic simulation eNATL60 simulation~\cite{brodeau2020}, which is based on NEMO~\cite{madec2024} an includes realistic forcings and bathymetry. This experiment investigates the capability of our model in depicting a flow that present ageostrophic, complex and rich dynamical features.
 
 \subsection{Configuration of OSSEs}
 
@@ -474,7 +472,7 @@ Therefore, perfect field reconstruction would result in a nRMSE score of 0 where
 \end{equation}
 
 
-\subsection{3-layer QG double gyre}
+\subsection{3-layer QG double gyre}\label{sec:qg3l}
 
 In the following the reference surface fields are established using a three-layer QG simulation in a double-gyre configuration. Within this framework, we can assess the ability of the RG-SI model in reconstructing top layer dynamics and compare its performances with a RG model with no error correction (RG0) and a RG model whose error is prescribed though an external forcing, RG-F (Reduced Gravity - Forced). Two variants of this setup have been explored. One where model parameters (reference layer depth, reduced gravity values\dots) are the same in the reference QG model and in the RG counterparts. Not only does this configuration confine the error sources to truncation error, it also allows for a fair comparison of $\tilde{\sf}_2$ and $\sf_2$. In the other variant, model parameters are modified to assess the robustness of each of the models when dealing with incorrect baroclinic deformation radius. Since the reference emulates the dynamics over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}{\kilo\meter}$ domain, we have decided to perform data assimilation on subdomains of the said area. We selected two $\qty{640}{\kilo\meter}$ x $\qty{1280}{\kilo\meter}$ zones, Z1, Z2, presenting different dynamical features.
 
@@ -486,7 +484,7 @@ In the following the reference surface fields are established using a three-laye
     \caption{Detail of the 4 zones of the three-layer QG experiment.}
 \end{figure}
 
-Z1 is at the core of the eastward jet and presents a surface intensified dynamics whereas on Z2 the barotropic component of the flow is stronger. In both zones, the OSSE follows the same tracks, observing 13243 gridpoints. Number of control parameters for the different models are detailed in the following table
+Z1 is at the core of the eastward jet and presents a surface intensified dynamics whereas on Z2 the barotropic component of the flow is stronger. In both zones, the OSSE follows the same tracks, observing 13243 gridpoints. Number of control parameters for the different models are detailed in~\cref{tab:qg3l-control-vector-size}.
 
 \begin{table}[H]
     \centering
@@ -545,8 +543,6 @@ where $F$ represent the additional forcing that depends on the framework,
 
 Both RG-F and RG-SI regularizations are scaled through an hyperparameter ($\gamma$). The value of $\gamma$ has been taken constant over all areas and assimilation periods. Regarding RG-SI, its value has been fitted so that regularization cost function on first assimilation step was around 1\%-1‰ of the observation loss in all areas and periods. Therefore, cost function is dominated by the observation error at first, which is then reduced in priority. Regarding RG-F, the value $\gamma$ has been empirically chosen so that the model performs as best as possible while not displaying non-physical small-scale artefacts in the reconstructed fields (which it tends to do in the absence of regularization).
 
-providing fields that would present  small-scale intensified (which it tends to do in the absence of regularization).
-
 \subsubsection{Surface stream function reconstruction evaluation}
 
 Performances were assessed over 12 20-days periods, each separated by 20 days. For both Z1 and Z2, error scores were then averaged and the empirical standard deviation of the error computed and displayed as a dispersion around the average error as shown in~\cref{fig:qg3L-nrmses}. Velocity nRMSEs were computed by retrieving velocity fields from the reference stream function.
@@ -558,7 +554,7 @@ Performances were assessed over 12 20-days periods, each separated by 20 days. F
     \caption{nRMSE on three-layer QG surface stream function (top row) and velocities (bottom row), averaged over 12 20-days periods, each separated by 20 days, on Z1 (left) and Z2 (right). Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG0, brown for RG-F and blue for RG-SI. The dashed line represents non-regularized RG-SI (hence $\gamma = 0$ in~\cref{def:RG-SI-reg}). Y-axis is shared in each row.}\label{fig:qg3L-nrmses}
 \end{figure}
 
-The RG-SI method is able to reconstruct the surface stream function with high fidelity (averaged nRMSE on Z1 is about 0.029 and about 0.016 on Z2 as detailed in~\cref{tab:qg3l-nrmses}) along with its gradient (providing the velocity). The introduction of the regularization, not only allowing the variational problem to be well constrained, but also halves the average nRMSE over both zones. Looking at the velocity errors, especially in Z2, it also clearly improves the reconstruction of the stream function gradient. In all four panels we also see that the regularization flattens the nRMSE, suggesting that it helps to constrain the model when observations are sparse.
+The RG-SI method is able to reconstruct the surface stream function with high fidelity (averaged nRMSE on Z1 is about 0.029 and about 0.016 on Z2 as detailed in~\cref{tab:qg3l-nrmses}) along with its gradient (providing the velocity). The introduction of the regularization, not only allows the variational problem to be well constrained, but also halves the average nRMSE over both zones. Looking at the velocity errors, especially in Z2, it also clearly improves the reconstruction of the stream function gradient. In all four panels we also see that the regularization flattens the nRMSE, suggesting that it helps to constrain the model when observations are sparse.
 
 \begin{table}[H]
     \centering
@@ -606,7 +602,7 @@ Although results show that the regularization improves the reconstruction of $\s
 
 \subsubsection{Perturbations of stratification parameters}
 
-To assess the relevancy of the deformation radius correction presented in~\cref{sec:deformation-radius-correction}, we keep the same parameters for the three-layer QG reference model, and we modify the other models' ones. Stratification perturbation is prescribed by modifying the layer reference thickness of the models. New parameters and the resulting deformation radius are detailed in the following table
+To assess the relevancy of the deformation radius correction presented in~\cref{sec:deformation-radius-correction}, we keep the same parameters for the three-layer QG reference model, and we modify the other models' ones. Stratification perturbation is prescribed by modifying the layer reference thickness of the models. New parameters and the resulting deformation radius are detailed in~\cref{tab:qg3l-modified-model-parameters}.
 
 \begin{table}[H]
     \centering
@@ -629,7 +625,7 @@ We then conducted the same experiment as before and monitored the ability of the
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmses.svg}
     \end{center}
-    \caption{nRMSE on three-layer QG surface stream function and velocities (average over 12 different assimilation periods each of 20 days) on Z1 (left) and Z2 (right) using perturbed models. Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG0, brown for RG-F and dark blue for RG-SI. A light blue line is used for the RG-SI model with $\alpha=0$ (hence no deformation radius correction).}
+    \caption{nRMSE on three-layer QG surface stream function (averaged over 12 different assimilation periods each of 20 days) on Z1 (left) and Z2 (right) using perturbed models. Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG0, brown for RG-F and dark blue for RG-SI. A light blue line is used for the RG-SI model with $\alpha=0$ (hence no deformation radius correction).}
 \end{figure}
 
 Here again, RG-SI accurately reconstructs the surface flow dynamics. The comparison of error scores of the standard RG-SI model and its counterpart with fixed $\alpha = 0$ shows that the introduction of a single additional parameter into the control vector results in an error reduction of more than 2 (see~\cref{tab:qg3l-pert-nrmses}). $\mathrm{nRMSE}_{\mathrm{vel}}$ scores are not displayed as they do not provide additional information to the nRMSE profiles.
@@ -648,19 +644,17 @@ Here again, RG-SI accurately reconstructs the surface flow dynamics. The compari
 
 Relative comparison with the error scores from~\cref{tab:qg3l-nrmses} shows that, overall, RG-SI still performs worse in Z1 in the perturbed framework ($\sim 17 \% $ relative error degradation) and, surprisingly performs better in Z2 ($\sim 31\%$ improvement). Regarding RG-F performances, they are both degraded in the perturbed framework, notably in Z1 ($\sim 47 \%$ relative degradation) and slightly in Z2 ($\sim 8 \%$ degradation). Nonetheless, perturbed RG-SI still outperform non-perturbed RG-F in reconstructing the surface flow of the three-layer QG model.
 
-\subsection{Validation with realistic OSSE}
+\subsection{Validation with realistic OSSE}\label{sec:enatl60}
 
-Using surface fields from the eNATL60 simulation~\cite{brodeau2020}, we monitor RG-SI's reconstruction of a fluid with ageostrophic dynamics. We have focused on a single area of dimension $\qty{680}{\kilo\meter}$ x $\qty{1030}{\kilo\meter}$ centered on $\qty{55}{\degree}$W $\qty{40}{\degree}$N.
+Using surface fields from the eNATL60 simulation~\cite{brodeau2020}, we monitor RG-SI's reconstruction of a fluid with ageostrophic dynamics. We have focused on a single area of dimension $\qty{680}{\kilo\meter}$ x $\qty{1030}{\kilo\meter}$ centered on $\qty{55}{\degree}$W $\qty{40}{\degree}$N. Located at the east of the US coast, this area contains Gulf Stream meanders that drive its dynamics.
+This area, t located at the east of the US coast
 Most parameters for all models are the exact same as the ones from~\cref{tab:qg3l-model-parameters}, apart from the time step, set to $\dt = \qty{3600}{\second}$ for all the models and the Coriolis parameters which were set to $f_0 = \qty{9.373}{\per\second}$ and $\beta = \qty{1.753}{\per\meter\per\second}$. Surface stream function anomaly is inferred from eNATL60's SSH and atmospheric pressures anomalies $p_{\mathrm{atm}}$, the latter being obtained from the Drakkar Forcing Set 5.2~\cite{dussin2016}. Anomalies are computed by removing its spatial average from the given field. Therefore, introducing the space-average operator ${\langle \cdot \rangle}_{XY}$, surface stream function anomaly $\Psi_{\mathrm{surf}}$ reads 
-
 \begin{equation}\label{def:sf-processing}
     \Psi_{\mathrm{surf}} = \frac{p_{\mathrm{atm}}}{f_0 \rho_0} + \frac{g}{f_0} SSH - \left(\frac{{\langle p_{\mathrm{atm}} \rangle}_{XY}}{f_0 \rho_0} + \frac{g}{f_0}{\langle SSH \rangle}_{XY}\right),
 \end{equation}
-
 where $\rho_0$ is the reference density for water. Additional experiments were conducted by removing the time-space average of both SSH and atmospheric pressure fields and yielded overall similar results. However, in such configurations, the reference fields contained large-scale spatial fluctuations corresponding to the ocean response to atmospheric pressure. Since the QG models are not able to capture such fluctuations, we decided to mitigate them by removing the space-averaged (instead of the time-space average) stream function components, as illustrated by~\cref{def:sf-processing}.
 
 As the resulting stream function contain small-scale features, it is then smoothed using a Gaussian filter and then downsampled from the high-resolution, curvilinear coordinates of the eNATL60 simulation into the regular, Cartesian grid of the QG models. It is this smoothed, down-scaled field that is used for both initial and boundary conditions of the QG models. The observations are sampled from the non-filtered surface stream function field, using the same OSSE as for the three-layer QG comparison. A total of 10333 pixels are observed during a single assimilation cycle. Control vectors sizes are given in~\cref{tab:enatl60-control-vector-size}.
-
 \begin{table}[H]
     \centering
     \begin{tabular}{lccc}
@@ -709,12 +703,12 @@ The visual comparison of the surface vorticity field demonstrates the ability of
     \caption{Surface vorticity fields retrieved from first assimilation cycle performed in summer, after variational minimization has been completed. First column displays reference vorticity field while second, third and fourth show RG-SI, RG-F and RG0 reconstructions, respectively. Top row displays vorticity field after 5 days and bottom one after 20 days.}\label{fig:enatl60-vorticity}
 \end{figure}
 
-\section{Conclusions and perspectives}
+\section{Conclusions and perspectives}\label{sec:conclusions}
 
 In order to improve sea surface reconstruction from altimetric observations using a reduced-gravity (RG) model, we have introduced a new formulation for the model error. This method emulates the subsurface stream function to account for the multilayer-truncation error that inherently comes with the RG assumption. Benefiting from such formulation, it is possible to express subsurface PV along with a diagnostic evaluation of its conservation.
-We formulated a variational assimilation framework using such model, and we replaced the usual background regularization by a physics-based regularization enforcing subsurface PV conservation. Using OSSE-sampled surface data from a three-layer QG simulation, we reconstructed surface state through the minimization of the resulting cost function. Both nRMSE scores and visual comparison of the surface vorticity fields showed the benefits of using such error parameterization and regularization: stream function nRMSE showed a 80 to 85\% error reduction when compared to a model corrected by an external forcing. These findings confirm the ability of the method in mitigating truncation error thus highlighting the benefits of refining error parameterization using theoretical knowledge of the dynamics.
+We formulated a variational assimilation framework using this model, and we replaced the usual background regularization by a physics-based regularization enforcing subsurface PV conservation. Using OSSE-sampled surface data from a three-layer QG simulation, we reconstructed surface state through the minimization of the resulting cost function. Both nRMSE scores and visual comparison of the surface vorticity fields showed the benefits of using such error parameterization and regularization: stream function nRMSE showed a 80 to 85\% error reduction when compared to a model corrected by an external forcing. These findings confirm the ability of the method in mitigating truncation error thus highlighting the benefits of refining error parameterization using theoretical knowledge of the dynamics.
 Despite being able to provide an estimation for the subsurface stream function, comparison to actual subsurface stream function in the three-layer QG experiment yielded moderate results. These results can be explained by the fact that, when correcting surface advection equation, only the subsurface stream function's material derivative is accessed and is therefore better constrained by observations than the actual field is.
-To evaluate our method over richer dynamics we then replicated the same experiment with observations sampled from the eNATL60 simulation. Results analysis has shown that the RG-SI methodology was able to improve surface reconstruction even for non-QG flows yet with a more modest improvement (25 to 30\% in stream function nRMSE). Nonetheless, although our method makes a strong assumption on the dynamics of the flow (as it enforces multilayer QG dynamics), such improvement over realistic flow suggests that a significant part of the reconstruction error can be explained by a field advected by the geostrophic flow. However, since the QG framework is not sufficient to emulate realistic dynamics, the identification of the parameterized field to the subsurface stream function can be discussed.
+To evaluate our method over richer dynamics we then replicated the same experiment with observations sampled from the eNATL60 simulation. Results analysis has shown that the RG-SI methodology was able to improve surface reconstruction even for non-QG flows yet with a more modest improvement (25 to 30\% in stream function nRMSE). Nonetheless, although our method makes a strong assumption on the dynamics of the flow (as it enforces multilayer QG dynamics), such improvement over realistic flow suggests that a significant part of the reconstruction error can be explained by a field advected by the geostrophic flow. However, in the context of a realistic flow, the identification of the parameterized field to the subsurface stream function can be discussed.
  
 
 Despite the improvement made over other reconstruction methods, the error in the eNATL60 experiment remains significant (more than 0.1 for stream function nRMSE and above 0.4 for velocity error). The method we have introduced specifically addresses truncation error but several sources of error are not taken into account. 
@@ -885,7 +879,7 @@ Indeed, since small scales (large $k_i$) are expected to carry less energy, we i
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_all_rmses_.svg}
     \end{center}
-    \caption{nRMSE on surface stream function (top row) and velocities (bottom row),averaged over 12 20-days periods, each separated by 20 days, on Z1 (left) and Z2 (right). Standard RG-SI model is identified by the solid blue line, RG-SI with coefficient obtained through the projection of $\sf_2$ (from the reference three-layer QG model) onto the reduced order space is shown by the green line and RG-F by the brown one. Y-axis is shared by both panels.}\label{fig:qg3L-proj-rmses}
+    \caption{nRMSE on surface stream function (top row) and velocities (bottom row), averaged over 12 20-days periods, each separated by 20 days, on Z1 (left) and Z2 (right). Standard RG-SI model is identified by the solid blue line, RG-SI with coefficient obtained through the projection of $\sf_2$ (from the reference three-layer QG model) onto the reduced order space is shown by the green line and RG-F by the brown one. Y-axis is shared by both panels.}\label{fig:qg3L-proj-rmses}
 \end{figure}
 
 \begin{figure}[H]
