@@ -1,176 +1,93 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% AGUJournalTemplate.tex: this template file is for articles formatted with LaTeX
-%
-% This file includes commands and instructions
-% given in the order necessary to produce a final output that will
-% satisfy AGU requirements, including customized APA reference formatting.
-%
-% You may copy this file and give it your
-% article name, and enter your text.
-%
-% guidelines and troubleshooting are here: 
+\documentclass[
+%  published,
+%   draft
+final
+]{agujournal2025}
 
-%% To submit your paper:
-\documentclass[final]{agujournal2019}
-\usepackage{url} %this package should fix any errors with URLs in refs.
-\usepackage{lineno}
-\usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
-\usepackage{soul}
-% Preamble ------------------------------------------------
-\usepackage{preamble}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{xparse}
+\usepackage{xspace}
+\usepackage{xstring}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{unicode-math}
+\usepackage{dsfont}
+% \usepackage{empheq}
+% \DeclareMathAlphabet{\mathbb}{U}{msb}{m}{n}
+\usepackage{cleveref}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{mwe}
+\usepackage{svg}
+\usepackage{multirow}
+\usepackage{booktabs}
+
 % Macros --------------------------------------------------
 \usepackage{macros}
 % Symbols --------------------------------------------------
 \usepackage{symbols}
-% Images --------------------------------------------------
-\graphicspath{{assets/figures/}}
-
-
-\linenumbers
-%%%%%%%
-% As of 2018 we recommend use of the TrackChanges package to mark revisions.
-% The trackchanges package adds five new LaTeX commands:
-%
-%  \note[editor]{The note}
-%  \annote[editor]{Text to annotate}{The note}
-%  \add[editor]{Text to add}
-%  \remove[editor]{Text to remove}
-%  \change[editor]{Text to remove}{Text to add}
-%
-% complete documentation is here: http://trackchanges.sourceforge.net/
-%%%%%%%
-
-\draftfalse
-
-%% Enter journal name below.
-%% Choose from this list of Journals:
-%
-% JGR: Atmospheres
-% JGR: Biogeosciences
-% JGR: Earth Surface
-% JGR: Oceans
-% JGR: Planets
-% JGR: Solid Earth
-% JGR: Space Physics
-% Global Biogeochemical Cycles
-% Geophysical Research Letters
-% Paleoceanography and Paleoclimatology
-% Radio Science
-% Reviews of Geophysics
-% Tectonics
-% Space Weather
-% Water Resources Research
-% Geochemistry, Geophysics, Geosystems
-% Journal of Advances in Modeling Earth Systems (JAMES)
-% Earth's Future
-% Earth and Space Science
-% Geohealth
-%
-% ie, \journalname{Water Resources Research}
-
-\journalname{Journal of Advances in Modeling Earth Systems (JAMES)}
-
 
 \begin{document}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  TITLE
-%
-% (A title should be specific, informative, and brief. Use
-% abbreviations only if they are defined in the abstract. Titles that
-% start with general keywords then specific terms are optimized in
-% searches)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Example: \title{This is a test title}
+\journalname{Journal of Advances in Modeling Earth Systems (JAMES)}
 
+% Your title can be multiple lines long.
 \title{Accounting for truncation error in reduced-gravity models: a subsurface-aware model for enhanced ocean surface reconstruction}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AUTHORS AND AFFILIATIONS
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Authors are individuals who have significantly contributed to the
-% research and preparation of the article. Group authors are allowed, if
-% each author in the group is separately identified in an appendix.)
-
-% List authors by first name or initial followed by last name and
-% separated by commas. Use \affil{} to number affiliations, and
-% \thanks{} for author notes.
-% Additional author notes should be indicated with \thanks{} (for
-% example, for current addresses).
-
-% Example: \authors{A. B. Author\affil{1}\thanks{Current address, Antartica}, B. C. Author\affil{2,3}, and D. E.
-% Author\affil{3,4}\thanks{Also funded by Monsanto.}}
 
 \authors{Gaétan Rigaut\affil{1}, Noé Lahaye\affil{1}, Etienne Mémin\affil{1}}
+	      
 
-
-% \affiliation{1}{First Affiliation}
-% \affiliation{2}{Second Affiliation}
-% \affiliation{3}{Third Affiliation}
-% \affiliation{4}{Fourth Affiliation}
-
-\affiliation{1}{Centre INRIA de l'Université de Rennes, France}
-%(repeat as many times as is necessary)
-
-
-% Corresponding author mailing address and e-mail address:
-
-% (include name and email addresses of the corresponding author.  More
-% than one corresponding author is allowed in this LaTeX file and for
-% publication; but only one corresponding author is allowed in our
-% editorial system.)
-
-% Example: \correspondingauthor{First and Last Name}{email@address.edu}
-
-\correspondingauthor{Gaétan Rigaut}{gaetan.rigaut@inria.fr}
+% Repeat for all authors:	      
+\affiliation{1}{Centre INRIA de l'Université de Rennes, France} % First argument is their footnote number, as above.
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% KEY POINTS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  List up to three key points (at least one is required)
-%  Key Points summarize the main points and conclusions of the article
-%  Each must be 140 characters or fewer with no special characters or punctuation and must be complete sentences
+% Corresponding author. Do not prepend with ``SI Corresponding author: '' in published version.
+\authoraddr{%
+                      % e.g., their full name, their department, their academic institution, their building, their City, State, Zip, Country. (theiremail\@ their institution)
+                      Gaétan Rigaut, gaetan.rigaut@inria.fr
+                   }
 
-% Example:
-% \begin{keypoints}
-% \item	List up to three key points (at least one is required)
-% \item	Key Points summarize the main points and conclusions of the article
-% \item	Each must be 140 characters or fewer with no special characters or punctuation and must be complete sentences
-% \end{keypoints}
 
-\begin{keypoints}
-    \item Enhancing reduced-gravity model reconstruction in the context of data assimilation using a theory-motivated model error parameterization
-    \item Introducing a physics-derived regularization term for the cost function to enforce multilayer QG dynamics
-    \item Improving the robustness of the model by introducing a deformation radius correcting parameter in the control vector
-\end{keypoints}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\authorrunninghead{Ignored.} % Ignored.
+
+% Key points.  
+%   Takes three arguments.  Remember to specifiy them all, using {} for no item.
 %
-%  ABSTRACT and PLAIN LANGUAGE SUMMARY
-%
-% A good Abstract will begin with a short description of the problem
-% being addressed, briefly describe the new data or analyses, then
-% briefly states the main conclusion(s) and how they are supported and
-% uncertainties.
+\keypoints%
+% {}{}{}
+%    % First key point, etc.
+    {Enhancing reduced-gravity model reconstruction in the context of data assimilation using a theory-motivated model error parameterization}{Introducing a physics-derived regularization term for the cost function to enforce multilayer QG dynamics}{Improving the robustness of the model by introducing a deformation radius correcting parameter in the control vector}
+%    {Summarize the main points and conclusions of the article}
+%    {Each must be 140 characters or fewer with no special characters or punctuation and must be complete sentences}
 
-% The Plain Language Summary should be written for a broad audience,
-% including journalists and the science-interested public, that will not have 
-% a background in your field.
-%
-% A Plain Language Summary is required in GRL, JGR: Planets, JGR: Biogeosciences,
-% JGR: Oceans, G-Cubed, Reviews of Geophysics, and JAMES.
-% see http://sharingscience.agu.org/creating-plain-language-summary/)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Call after \authors.
 
-%% \begin{abstract} starts the second page
+% Title running heads will be ignored, too:
+\titlerunninghead{Ignored.}
+
+% Key points was here
+
+\maketitle
+
+
+% Two options for abstracts: one with an abstract only and one with a plain language summary included.
+%
+%\begin{abstract}
+%    Abstract text body.
+%\end{abstract}
+
+
+\bigskip  % Remove; for demo purposes only.
+% OR:
 
 \begin{abstract}
     Ocean surface reconstruction through variational assimilation (VA) of partial, satellite-acquired observations is often performed using reduced-order models. 
@@ -183,44 +100,13 @@
     Method validation is performed using two different reference datasets, a three-layer quasi-geostrophic double-gyre simulation and the eNATL60 simulation, both with observations retrieved by an OSSE along SWOT-like tracks.
     Results show a reduction of normalized RMSE by 0.12 and 0.05 on surface stream function reconstruction error in each experiment (respectively) when compared to a RG model corrected by an external forcing.
     This study emphasizes the benefits of acknowledging simplification assumptions to design theory-informed error parameterizations to further refine reconstruction capabilities of reduced-order models.
+    %
+     \begin{plainlanguagesummary}
+            Knowing the ocean surface state is essential for many applications, among which tracking marine currents or predicting weather patterns. While satellites provide the vast majority of measurements of the ocean, they only capture surface fields, and do not ensure global coverage at all time. To fill the gaps, observations are integrated into numerical simulations that are usually performed using simplified models of ocean dynamics. State-of-the-art reconstruction methods are built upon the reduced-gravity quasi-geostrophic model, which is a simplification of a more extensive framework, the multilayer quasi-geostrophic system. The simplification is made by considering all the deep ocean flow to be at rest. In this study we bridge the gap between the two frameworks by introducing a method that infers the subsurface flow in order to better emulate surface dynamics. When tested against numerical simulations, our method shows a significant reduction of the reconstruction error, both when assessed in a simplified setting and a high-resolution realistic setting (error reduced by 0.12 and 0.05, respectively). These results demonstrate the importance of using theoretical knowledge of the ocean dynamics to help reconstruction models account for their inherent sources of error.
+     \end{plainlanguagesummary}
+     %
+     % Do not put more abstract text body here!
 \end{abstract}
-
-\section*{Plain Language Summary}
-
-Knowing the ocean surface state is essential for many applications, among which tracking marine currents or predicting weather patterns. While satellites provide the vast majority of measurements of the ocean, they only capture surface fields, and do not ensure global coverage at all time. To fill the gaps, observations are integrated into numerical simulations that are usually performed using simplified models of ocean dynamics. State-of-the-art reconstruction methods are built upon the reduced-gravity quasi-geostrophic model, which is a simplification of a more extensive framework, the multilayer quasi-geostrophic system. The simplification is made by considering all the deep ocean flow to be at rest. In this study we bridge the gap between the two frameworks by introducing a method that infers the subsurface flow in order to better emulate surface dynamics. When tested against numerical simulations, our method shows a significant reduction of the reconstruction error, both when assessed in a simplified setting and a high-resolution realistic setting (error reduced by 0.12 and 0.05, respectively). These results demonstrate the importance of using theoretical knowledge of the ocean dynamics to help reconstruction models account for their inherent sources of error.
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  BODY TEXT
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%% Suggested section heads:
-% \section{Introduction}
-%
-% The main text should start with an introduction. Except for short
-% manuscripts (such as comments and replies), the text should be divided
-% into sections, each with its own heading.
-
-% Headings should be sentence fragments and do not begin with a
-% lowercase letter or number. Examples of good headings are:
-
-% \section{Materials and Methods}
-% Here is text on Materials and Methods.
-%
-% \subsection{A descriptive heading about methods}
-% More about Methods.
-%
-% \section{Data} (Or section title might be a descriptive heading about data)
-%
-% \section{Results} (Or section title might be a descriptive heading about the
-% results)
-%
-% \section{Conclusions}
-
 
 
 \section{Introduction}\label{sec:introduction}
@@ -256,15 +142,11 @@ QG dynamics relies on the material conservation of PV by geostrophic flow. Both 
     \item $\vect{\sf}$ the stream function vector,
     \item $\vect{\pv}$ the PV vector.
 \end{itemize}
-
 Introducing the horizontal gradient $\grad = \transpose{\begin{bmatrix} \pdvx & \pdvy \end{bmatrix}}$ along with the perpendicular horizontal gradient $\gradperp = \transpose{\begin{bmatrix} -\pdvy & \pdvx \end{bmatrix}}$, the free-surface multilayer QG equations (in the absence of external forcing) in the layer $i$ read
-
-
 \begin{eqnarray}\label{eq:mlqg}
     \pv_i = \lap \sf_i - f_0^2 {\left(\mat{A} \vect{\sf}\right)}_i, \label{def:pv-ml}\\
     \pdvt{\pv_i} + \gradperp \sf_i \cdot \grad \pv_i = 0\label{def:pv-adv}.
 \end{eqnarray}
-
 Here, the stretching matrix $\mat{A}$, is given by
 \begin{equation}
     \mat{A} = \begin{bmatrix}
@@ -448,7 +330,7 @@ We retrieved ideal initial condition (IC) and boundary conditions (BC) from the 
 
 In both experiments, observations are drawn from the surface using an OSSE that simulates SWOT-like sampling tracks. Satellite track example can be found in~\cref{fig:satellite-track}, along with the cumulative passages of the tracks over a 20-days period.
 
-\begin{figure}[H]
+\begin{figure}[h]
     \begin{center}
         \includesvg[width=0.95\textwidth]{assets/images/satellite_track.svg}
     \end{center}
@@ -476,7 +358,7 @@ Therefore, perfect field reconstruction would result in a nRMSE score of 0 where
 
 In the following the reference surface fields are established using a three-layer QG simulation in a double-gyre configuration. Within this framework, we can assess the ability of the RG-SI model in reconstructing top layer dynamics and compare its performances with a RG model with no error correction (RG0) and a RG model whose error is prescribed though an external forcing, RG-F (Reduced Gravity - Forced). Two variants of this setup have been explored. One where model parameters (reference layer depth, reduced gravity values\dots) are the same in the reference QG model and in the RG counterparts. Not only does this configuration confine the error sources to truncation error, it also allows for a fair comparison of $\tilde{\sf}_2$ and $\sf_2$. In the other variant, model parameters are modified to assess the robustness of each of the models when dealing with incorrect baroclinic deformation radius. Since the reference emulates the dynamics over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}{\kilo\meter}$ domain, we have decided to perform data assimilation on subdomains of the said area. We selected two $\qty{640}{\kilo\meter}$ x $\qty{1280}{\kilo\meter}$ zones, Z1, Z2, presenting different dynamical features.
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \begin{center}
         \includesvg[width=0.7\textwidth]{assets/images/zones.svg}
@@ -486,7 +368,7 @@ In the following the reference surface fields are established using a three-laye
 
 Z1 is at the core of the eastward jet and presents a surface intensified dynamics whereas on Z2 the barotropic component of the flow is stronger. In both zones, the OSSE follows the same tracks, observing 13243 gridpoints. Number of control parameters for the different models are detailed in~\cref{tab:qg3l-control-vector-size}.
 
-\begin{table}[H]
+\begin{table}[h]
     \centering
     \begin{tabular}{lcccc}
           & RG-SI & RG-SI ($\alpha = 0$) & RG-F & RG0 \\
@@ -502,7 +384,7 @@ Z1 is at the core of the eastward jet and presents a surface intensified dynamic
 
 Both the reference and the models (RG-SI, RG-F, RG0) were configured with the same time and space resolutions. Regarding stratification parameters, RG0 has been implemented as a one-layer QG model with $g = g_1 g_2/(g_1+g_2)$ so that it matches the parameters of a truncation of the multilayer equations (see~\cref{def:pv-rg}). RG-SI and RG-F have been instantiated so that they share the same deformation radius, namely $\qty{29}{\kilo\meter}$, which corresponds to the baroclinic deformation radius of the two-layer QG model matching the parameters of the reference three-layer QG on the top two-layers. Such value is coherent with typical values of baroclinic deformation radius at mid-latitudes~\cite{chelton1998}. All model parameters are detailed in~\cref{tab:qg3l-model-parameters}.
 
-\begin{table}[H]
+\begin{table}[h]
     \centering
     \begin{tabular}{lcccc}
         \hline
@@ -547,7 +429,7 @@ Both RG-F and RG-SI regularizations are scaled through an hyperparameter ($\gamm
 
 Performances were assessed over 12 20-days periods, each separated by 20 days. For both Z1 and Z2, error scores were then averaged and the empirical standard deviation of the error computed and displayed as a dispersion around the average error as shown in~\cref{fig:qg3L-nrmses}. Velocity nRMSEs were computed by retrieving velocity fields from the reference stream function.
 
-\begin{figure}[H]
+\begin{figure}[h]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_all_rmses.svg}
     \end{center}
@@ -556,7 +438,7 @@ Performances were assessed over 12 20-days periods, each separated by 20 days. F
 
 The RG-SI method is able to reconstruct the surface stream function with high fidelity (averaged nRMSE on Z1 is about 0.029 and about 0.016 on Z2 as detailed in~\cref{tab:qg3l-nrmses}) along with its gradient (providing the velocity). The introduction of the regularization, not only allows the variational problem to be well constrained, but also halves the average nRMSE over both zones. Looking at the velocity errors, especially in Z2, it also clearly improves the reconstruction of the stream function gradient. In all four panels we also see that the regularization flattens the nRMSE, suggesting that it helps to constrain the model when observations are sparse.
 
-\begin{table}[H]
+\begin{table}[h]
     \centering
         \begin{tabular}{clccccc}
             & & RG-SI & RG-SI ($\gamma = 0$) & RG-F & RG0 & RG-Proj\\
@@ -577,7 +459,7 @@ It is also worth mentioning that, as a comparison, we have tried fitting $\tilde
 
 The visual comparison of vorticity fields shows almost identical fields. An example of such fields after 5 and 20 days of simulation are displayed in~\cref{fig:qg3L-vorticity}
 
-\begin{figure}[H]
+\begin{figure}[h]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_vorticity_all_32_96_256_384.svg}
     \end{center}
@@ -590,21 +472,19 @@ A careful comparison of regularized (second column) and non-regularized (third c
 \subsubsection{Estimation of the sublayer stream function}
 
 As the RG-SI method provides an estimation for the sublayer flow, $\sf_2$, we have evaluated the reconstruction of $\sf_2$ by $\tilde{\sf}_2$. Given the reference sublayer stream function from the three-layer QG simulation, nRMSE is evaluated for $\tilde{\sf}_2$. Averages and standard deviation are computed over the variational assimilation periods as for the surface stream function.
-
-\begin{figure}[H]
+\begin{figure}[h]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_psi2_rmses.svg}
     \end{center}
     \caption{nRMSE on three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days) on Z1 (left) and Z2 (right). RG-SI model is identified by the solid blue line and non-regularized RG-SI by the dashed blue line. Y-axis is shared by both panels.}\label{fig:qg3L-psi2-rmse}
 \end{figure}
-
 Although results show that the regularization improves the reconstruction of $\sf_2$ by $\tilde{\sf}_2$, the quality of the overall reconstruction is far from being as good as it was for the surface flow. We understand this result as follows: although the parameterized field is indeed $\sf_2$, the actual field is never directly used by the model. What matters when emulating the dynamics is $\Dt*{\tilde{\sf}_2}$. Therefore, although $\sf_2$ might not be accurately represented by $\tilde{\sf}_2$, as long as $\Dt*{\sf_2}$ is by $\Dt*{\tilde{\sf}_2}$, the surface dynamics can still be precisely reconstructed. Evaluating the nRMSE of $\Dt*{\tilde{\sf}_2}$ yields better results, as it is mostly stable around 0.5 (resp. 0.15) in Z1 (resp. Z2). Corresponding figures can be found in the appendix (\cref{fig:qg3L-Dtpsi2-rmse}). Although still not as good as top layer reconstruction scores, $\Dt*{\tilde{\sf_2}}$ is better reconstructed than the field itself. Actually, when projecting the reference sublayer stream function onto the reduced-order space, the resulting error in $\Dt*{\tilde{\sf_2}}$ is not very far from the one obtained using RG-SI.
 
 \subsubsection{Perturbations of stratification parameters}
 
 To assess the relevancy of the deformation radius correction presented in~\cref{sec:deformation-radius-correction}, we keep the same parameters for the three-layer QG reference model, and we modify the other models' ones. Stratification perturbation is prescribed by modifying the layer reference thickness of the models. New parameters and the resulting deformation radius are detailed in~\cref{tab:qg3l-modified-model-parameters}.
 
-\begin{table}[H]
+\begin{table}[h]
     \centering
     \begin{tabular}{lcccc}
         & QG3L & RG-SI & RG-F & RG0 \\
@@ -621,7 +501,7 @@ To assess the relevancy of the deformation radius correction presented in~\cref{
 
 We then conducted the same experiment as before and monitored the ability of the different models to tamper incorrect parameters and reconstruct the surface dynamics.
 
-\begin{figure}[H]
+\begin{figure}[h]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmses.svg}
     \end{center}
@@ -630,7 +510,7 @@ We then conducted the same experiment as before and monitored the ability of the
 
 Here again, RG-SI accurately reconstructs the surface flow dynamics. The comparison of error scores of the standard RG-SI model and its counterpart with fixed $\alpha = 0$ shows that the introduction of a single additional parameter into the control vector results in an error reduction of more than 2 (see~\cref{tab:qg3l-pert-nrmses}). $\mathrm{nRMSE}_{\mathrm{vel}}$ scores are not displayed as they do not provide further information to the nRMSE profiles.
 
-\begin{table}[H]
+\begin{table}[h]
     \centering
         \begin{tabular}{clcccc}
             & & RG-SI & RG-SI ($\alpha = 0$) & RG-F & RG0 \\
@@ -656,7 +536,7 @@ Most parameters for all models are the exact same as the ones from~\cref{tab:qg3
 where $\rho_0$ is the reference density for water. Additional experiments were conducted by removing the time-space average of both SSH and atmospheric pressure fields and yielded overall similar results. However, in such configurations, the reference fields contained large-scale spatial fluctuations corresponding to the ocean response to atmospheric pressure. Since the QG models are not able to capture such fluctuations, we decided to mitigate them by removing the space-averaged (instead of the time-space average) stream function components, as illustrated by~\cref{def:sf-processing}.
 
 As the resulting stream function contain small-scale features, it is then smoothed using a Gaussian filter and then downsampled from the high-resolution, curvilinear coordinates of the eNATL60 simulation into the regular, Cartesian grid of the QG models. It is this smoothed, down-scaled field that is used for both initial and boundary conditions of the QG models. The observations are sampled from the non-filtered surface stream function field, using the same OSSE as for the three-layer QG comparison. A total of 10333 pixels are observed during a single assimilation cycle. Control vectors sizes are given in~\cref{tab:enatl60-control-vector-size}.
-\begin{table}[H]
+\begin{table}[h]
     \centering
     \begin{tabular}{lccc}
           & RG-SI & RG-F & RG0 \\
@@ -666,19 +546,15 @@ As the resulting stream function contain small-scale features, it is then smooth
     \end{tabular}
     \caption{Comparison of the control vector size for the different models in the eNATL60 experiment.}\label{tab:enatl60-control-vector-size}
 \end{table}
-
 Once again variational assimilation is conducted over 20-days periods and the quality of the reconstruction is assessed using stream function and velocity nRMSEs to compare reference fields to their reconstructed counterparts. Assimilation is conducted over 4 consecutive periods, during two different seasons, summer (July, August, September) and winter (January, February, March). Results are shown in~\cref{fig:enatl60-nrmse}. Velocity nRMSE is evaluated using surface zonal and meridional velocities from eNATL60 simulation as references.
-
-\begin{figure}[H]
+\begin{figure}[h]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/enatl60_all_rmses.svg}
     \end{center}
     \caption{nRMSE on eNATL60 surface stream function (top row) and velocities (bottom row), averaged over 4 consecutive 20-days periods. Summer is displayed in the left column and winter in the right one. Models are identified by the line color, black for RG0, brown for RG-F and blue for RG-SI. Solid line represents the averaged over the 4 periods and the shaded area the empirical standard deviation. Y-axis is shared in each row.}\label{fig:enatl60-nrmse}
 \end{figure}
-
 Despite the complexity of the realistic flow, RG-SI is still able to reconstruct surface dynamics with precision. The stream function nRMSE averages at 0.13 (resp. 0.11) for summer (resp.\ winter), demonstrating the ability of the model in reconstructing surface stream function. Regarding velocity, nRMSE scores remain significant (see~\cref{tab:enatl60-nrmses}). Indeed, initial velocity retrieved from initial condition already conveys a significant error (around 0.2-0.25), reflecting the limitation of our method in emulating ageostrophic components or small-scale patterns of the surface flow that cannot be captured because of the horizontal resolution of the models.
-
-\begin{table}[H]
+\begin{table}[h]
     \centering
         \begin{tabular}{clccc}
             & & RG-SI & RG-F & RG0 \\
@@ -692,12 +568,10 @@ Despite the complexity of the realistic flow, RG-SI is still able to reconstruct
     \end{tabular}
 \caption{Averaged nRMSE values.}\label{tab:enatl60-nrmses}
 \end{table}
-
 Such results indicate that a great component of the error conducted by the RG model can be explained by a field advected by geostrophic flow (whether only the sublayer geostrophic stream function or a more complex field). Regardless of the season (summer or winter), RG-SI provides an improvement over the RG-F method and significantly decreases the error that was conducted by the RG0 model.
 
 The visual comparison of the surface vorticity field demonstrates the ability of the RG-SI method in reconstructing a realistic flow. An example of the vorticity fields is shown in~\cref{fig:enatl60-vorticity}. The overall comparison of the models show that RG-SI is able to reconstruct larger vortices, although its resolution prevents it from representing smaller ones. RG-SI also seems to outperform the other models in locating the larger vortices.
-
-\begin{figure}[H]
+\begin{figure}[h]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/enatl60_vorticity_summer.svg}
     \end{center}
@@ -724,125 +598,22 @@ As all the presented results were established using simulated data, the next ste
 This new method highlights the benefits of deriving model error parameterization from the general physical framework of the model. The use of physics-based regularization has also proven to be relevant, especially in the absence of any prior estimate of the parameterized field, which can be very useful when there are no direct observations of the corresponding field. Successfully applying RG-SI to real SWOT data would be a significant step forward, assessing the relevancy of the method in a real-world application.
 
 
-%%
+% Your Data Availability Statement is an unnumbered section right before the bibliography.
+\section*{Open Research Statement}
 
-%  Numbered lines in equations:
-%  To add line numbers to lines in equations,
-%  \begin{linenomath*}
-%  \begin{equation}
-%  \end{equation}
-%  \end{linenomath*}
+Python codes used to emulate the models are available at \url{https://github.com/grigaut/QG/}.
 
 
 
-%% Enter Figures and Tables near as possible to where they are first mentioned:
+% Bibliography
+%\cite{*} % If you have uncited bibliography items.
 %
-% DO NOT USE \psfrag or \subfigure commands.
-%
-% Figure captions go below the figure.
-% Acronyms used in figure captions will be spelled out in the final, published version.
+\bibliography{refs} % Replace ``wiley'' with your bibliography's file name.  Do not specify its extension, e.g., .bib.
 
-% Table titles go above tables;  other caption information
-%  should be placed in last line of the table, using
-% \multicolumn2l{$^a$ This is a table note.}
-% NOTE that there is no difference between table caption and table heading in the final, published version
-%
-%----------------
-% EXAMPLE FIGURES
-%
-% \begin{figure}
-% \includegraphics{example.png}
-% \caption{caption}
-% \end{figure}
-%
-% Giving latex a width will help it to scale the figure properly. A simple trick is to use \textwidth. Try this if large figures run off the side of the page.
-% \begin{figure}
-% \noindent\includegraphics[width=\textwidth]{anothersample.png}
-%\caption{caption}
-%\label{pngfiguresample}
-%\end{figure}
-%
-%
-% If you get an error about an unknown bounding box, try specifying the width and height of the figure with the natwidth and natheight options. This is common when trying to add a PDF figure without pdflatex.
-% \begin{figure}
-% \noindent\includegraphics[natwidth=800px,natheight=600px]{samplefigure.pdf}
-%\caption{caption}
-%\label{pdffiguresample}
-%\end{figure}
-%
-%
-% PDFLatex does not seem to be able to process EPS figures. You may want to try the epstopdf package.
-%
 
-%
-% ---------------
-% EXAMPLE TABLE
-%
-% \begin{table}
-% \caption{Time of the Transition Between Phase 1 and Phase 2$^{a}$}
-% \centering
-% \begin{tabular}{l c}
-% \hline
-%  Run  & Time (min)  \\
-% \hline
-%   $l1$  & 260   \\
-%   $l2$  & 300   \\
-%   $l3$  & 340   \\
-%   $h1$  & 270   \\
-%   $h2$  & 250   \\
-%   $h3$  & 380   \\
-%   $r1$  & 370   \\
-%   $r2$  & 390   \\
-% \hline
-% \multicolumn{2}{l}{$^{a}$Footnote text here.}
-% \end{tabular}
-% \end{table}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% SIDEWAYS FIGURES and TABLES
-% AGU prefers the use of {sidewaystable} over {landscapetable} as it causes fewer problems.
-%
-% \begin{sidewaysfigure}
-% \includegraphics[width=20pc]{figsamp}
-% \caption{caption here}
-% \label{newfig}
-% \end{sidewaysfigure}
-%
-%  \begin{sidewaystable}
-%  \caption{Caption here}
-% \label{tab:signif_gap_clos}
-%  \begin{tabular}{ccc}
-% one&two&three\\
-% four&five&six
-%  \end{tabular}
-%  \end{sidewaystable}
-
-%% If using numbered lines, please surround equations with \begin{linenomath*}...\end{linenomath*}
-%\begin{linenomath*}
-%\begin{equation}
-%y|{f} \sim g(m, \sigma),
-%\end{equation}
-%\end{linenomath*}
-
-%%% End of body of article
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Optional Appendices go here
-%
-% The \appendix command resets counters and redefines section heads
-%
-% After typing \appendix
-%
-%\section{Here Is Appendix Title}
-% will show
-% A: Here Is Appendix Title
-%
-%\appendix
-%\section{Here is a sample appendix}
-
-\newpage
-
-\appendix
+% Appendix sections are numbered differently than article ones.
+\appendix  % Put this first.
 
 \section{RG-SI sublayer parameterization}\label{appendix:rg-si-parameterization}
 
@@ -876,252 +647,25 @@ Indeed, since small scales (large $k_i$) are expected to carry less energy, we i
 
 \section{Projected three-layer QG sublayer stream function performances}
 
-\begin{figure}[H]
+\begin{figure}[h]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_all_rmses_.svg}
     \end{center}
     \caption{nRMSE on surface stream function (top row) and velocities (bottom row), averaged over 12 20-days periods, each separated by 20 days, on Z1 (left) and Z2 (right). Standard RG-SI model is identified by the solid blue line, RG-SI with coefficient obtained through the projection of $\sf_2$ (from the reference three-layer QG model) onto the reduced order space is shown by the green line and RG-F by the brown one. Y-axis is shared by both panels.}\label{fig:qg3L-proj-rmses}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h]
     \begin{center}
         \includesvg[width=\textwidth]{assets/images/qg3l_Dt_psi2_rmses.svg}
     \end{center}
     \caption{nRMSE on material derivative of three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days) on Z1 (left) and Z2 (right). Standard RG-SI model is identified by the solid blue line whereas RG-SI with coefficient obtained through the projection of $\sf_2$ (from the reference three-layer QG model) onto the reduced order space is shown by the green line. Y-axis is shared by both panels.}\label{fig:qg3L-Dtpsi2-rmse}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Optional Glossary, Notation or Acronym section goes here:
-%
-% Glossary is only allowed in Reviews of Geophysics
-%  \begin{glossary}
-%  \term{Term}
-%   Term Definition here
-%  \term{Term}
-%   Term Definition here
-%  \term{Term}
-%   Term Definition here
-%  \end{glossary}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Acronyms
-%% NOTE that acronyms in the final published version will be spelled out when used in figure captions.
-%   \begin{acronyms}
-%   \acro{Acronym}
-%   Definition here
-%   \acro{EMOS}
-%   Ensemble model output statistics
-%   \acro{ECMWF}
-%   Centre for Medium-Range Weather Forecasts
-%   \end{acronyms}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Notation
-%   \begin{notation}
-%   \notation{$a+b$} Notation Definition here
-%   \notation{$e=mc^2$}
-%   Equation in German-born physicist Albert Einstein's theory of special
-%  relativity that showed that the increased relativistic mass ($m$) of a
-%  body comes from the energy of motion of the body—that is, its kinetic
-%  energy ($E$)—divided by the speed of light squared ($c^2$).
-%   \end{notation}
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% DATA SECTION and ACKNOWLEDGMENTS
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section*{Open Research Section}
-
-Python codes used to emulate the models are available at \url{https://github.com/grigaut/QG/}.
-
-\section*{Conflict of Interest declaration}
-
-The authors declare there are no conflicts of interest for this manuscript.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% REFERENCES and BIBLIOGRAPHY
-%
-% \bibliography{<name of your .bib file>} don't specify the file extension
-% don't specify bibliographystyle
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\bibliography{refs}
-
-
-
-%Reference citation instructions and examples:
-%
-% Please use ONLY \cite and \citeA for reference citations.
-% \cite for parenthetical references
-% ...as shown in recent studies (Simpson et al., 2019)
-% \citeA for in-text citations
-% ...Simpson et al. (2019) have shown...
-%
-%
-%...as shown by \citeA{jskilby}.
-%...as shown by \citeA{lewin76}, \citeA{carson86}, \citeA{bartoldy02}, and \citeA{rinaldi03}.
-%...has been shown \citeA{jskilbye}.
-%...has been shown \citeA{lewin76,carson86,bartoldy02,rinaldi03}.
-%... \cite <i.e.>[]{lewin76,carson86,bartoldy02,rinaldi03}.
-%...has been shown by \cite <e.g.,>[and others]{lewin76}.
-%
-% apacite uses < > for prenotes and [ ] for postnotes
-% DO NOT use other cite commands (e.g., \citet, \citep, \citeyear, \nocite, \citealp, etc.).
-%
-
 
 
 \end{document}
 
 
-More Information and Advice:
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SECTION HEADS
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Capitalize the first letter of each word (except for
-% prepositions, conjunctions, and articles that are
-% three or fewer letters).
-
-% AGU follows standard outline style; therefore, there cannot be a section 1 without
-% a section 2, or a section 2.3.1 without a section 2.3.2.
-% Please make sure your section numbers are balanced.
-% ---------------
-% Level 1 head
-%
-% Use the \section{} command to identify level 1 heads;
-% type the appropriate head wording between the curly
-% brackets, as shown below.
-%
-%An example:
-%\section{Level 1 Head: Introduction}
-%
-% ---------------
-% Level 2 head
-%
-% Use the \subsection{} command to identify level 2 heads.
-%An example:
-%\subsection{Level 2 Head}
-%
-% ---------------
-% Level 3 head
-%
-% Use the \subsubsection{} command to identify level 3 heads
-%An example:
-%\subsubsection{Level 3 Head}
-%
-%---------------
-% Level 4 head
-%
-% Use the \subsubsubsection{} command to identify level 3 heads
-% An example:
-%\subsubsubsection{Level 4 Head} An example.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IN-TEXT LISTS
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Do not use bulleted lists; enumerated lists are okay.
-% \begin{enumerate}
-% \item
-% \item
-% \item
-% \end{enumerate}
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  EQUATIONS
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Single-line equations are centered.
-% Equation arrays will appear left-aligned.
-
-Math coded inside display math mode \[ ...\]
- will not be numbered, e.g.,:
- \[ x^2=y^2 + z^2\]
-
- Math coded inside \begin{equation} and \end{equation} will
- be automatically numbered, e.g.,:
- \begin{equation}
- x^2=y^2 + z^2
- \end{equation}
-
-
-% To create multiline equations, use the
-% \begin{eqnarray} and \end{eqnarray} environment
-% as demonstrated below.
-\begin{eqnarray}
-  x_{1} & = & (x - x_{0}) \cos \Theta \nonumber \\
-        && + (y - y_{0}) \sin \Theta  \nonumber \\
-  y_{1} & = & -(x - x_{0}) \sin \Theta \nonumber \\
-        && + (y - y_{0}) \cos \Theta.
-\end{eqnarray}
-
-%If you don't want an equation number, use the star form:
-%\begin{eqnarray*}...\end{eqnarray*}
-
-% Break each line at a sign of operation
-% (+, -, etc.) if possible, with the sign of operation
-% on the new line.
-
-% Indent second and subsequent lines to align with
-% the first character following the equal sign on the
-% first line.
-
-% Use an \hspace{} command to insert horizontal space
-% into your equation if necessary. Place an appropriate
-% unit of measure between the curly braces, e.g.
-% \hspace{1in}; you may have to experiment to achieve
-% the correct amount of space.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  EQUATION NUMBERING: COUNTER
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% You may change equation numbering by resetting
-% the equation counter or by explicitly numbering
-% an equation.
-
-% To explicitly number an equation, type \eqnum{}
-% (with the desired number between the brackets)
-% after the \begin{equation} or \begin{eqnarray}
-% command.  The \eqnum{} command will affect only
-% the equation it appears with; LaTeX will number
-% any equations appearing later in the manuscript
-% according to the equation counter.
-%
-
-% If you have a multiline equation that needs only
-% one equation number, use a \nonumber command in
-% front of the double backslashes (\\) as shown in
-% the multiline equation above.
-
-% If you are using line numbers, remember to surround
-% equations with \begin{linenomath*}...\end{linenomath*}
-
-%  To add line numbers to lines in equations:
-%  \begin{linenomath*}
-%  \begin{equation}
-%  \end{equation}
-%  \end{linenomath*}
 
 
 
