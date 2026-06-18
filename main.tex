@@ -1,16 +1,12 @@
 \documentclass[
 %   published,
-%   draft,
-  final
+  draft
 ]{agujournal2025}
-\usepackage{fontspec}
+
 \usepackage{microtype}
 \usepackage{parskip}
+\usepackage{enumitem}
 \usepackage{amsmath}
-\usepackage{xparse}
-\usepackage{xspace}
-\usepackage{xstring}
-\usepackage{amsfonts}
 \usepackage{mathtools}
 \usepackage{unicode-math}
 \usepackage{dsfont}
@@ -20,7 +16,6 @@
 \usepackage{float}
 \usepackage{mwe}
 \usepackage{multirow}
-\usepackage{booktabs}
 
 % Macros --------------------------------------------------
 \usepackage{macros}
@@ -83,13 +78,12 @@
     Results show a reduction of normalized RMSE by 0.12 and 0.05 on surface stream function reconstruction error in each experiment (respectively) when compared to a RG model corrected by an external forcing.
     This study emphasizes the benefits of acknowledging simplification assumptions to design theory-informed error parameterizations to further refine reconstruction capabilities of reduced-order models.
     %
-     \begin{plainlanguagesummary}
+    \begin{plainlanguagesummary}
         Knowing the ocean surface state is essential for many applications, among which tracking marine currents or predicting weather patterns. While satellites provide the vast majority of measurements of the ocean, they only capture surface fields, and do not ensure global coverage at all time. To fill the gaps, observations are integrated into numerical simulations that are usually performed using simplified models of ocean dynamics. State-of-the-art reconstruction methods are built upon the reduced-gravity quasi-geostrophic model, which is a simplification of a more extensive framework, the multilayer quasi-geostrophic system. The simplification is made by considering all the deep ocean flow to be at rest. In this study we bridge the gap between the two frameworks by introducing a method that infers the subsurface flow in order to better emulate surface dynamics. When tested against numerical simulations, our method shows a significant reduction of the reconstruction error, both when assessed in a simplified setting and a high-resolution realistic setting (error reduced by 0.12 and 0.05, respectively). These results demonstrate the importance of using theoretical knowledge of the ocean dynamics to help reconstruction models account for their inherent sources of error.
-     \end{plainlanguagesummary}
-     %
-     % Do not put more abstract text body here!
+    \end{plainlanguagesummary}
+    %
+    % Do not put more abstract text body here!
 \end{abstract}
-
 
 \section{Introduction}\label{sec:introduction}
 
@@ -341,7 +335,6 @@ Therefore, perfect field reconstruction would result in a nRMSE score of 0 where
 In the following the reference surface fields are established using a three-layer QG simulation in a double-gyre configuration. Within this framework, we can assess the ability of the RG-SI model in reconstructing top layer dynamics and compare its performances with a RG model with no error correction (RG0) and a RG model whose error is prescribed though an external forcing, RG-F (Reduced Gravity - Forced). Two variants of this setup have been explored. One where model parameters (reference layer depth, reduced gravity values\dots) are the same in the reference QG model and in the RG counterparts. Not only does this configuration confine the error sources to truncation error, it also allows for a fair comparison of $\tilde{\sf}_2$ and $\sf_2$. In the other variant, model parameters are modified to assess the robustness of each of the models when dealing with incorrect baroclinic deformation radius. Since the reference emulates the dynamics over a $\qty{2560}{\kilo\meter}$ by $\qty{5120}{\kilo\meter}$ domain, we have decided to perform data assimilation on subdomains of the said area. We selected two $\qty{640}{\kilo\meter}$ x $\qty{1280}{\kilo\meter}$ zones, Z1, Z2, presenting different dynamical features.
 
 \begin{figure}[h]
-    \centering
     \begin{center}
         \includegraphics[width=0.7\textwidth]{zones.pdf}
     \end{center}
@@ -351,13 +344,14 @@ In the following the reference surface fields are established using a three-laye
 Z1 is at the core of the eastward jet and presents a surface intensified dynamics whereas on Z2 the barotropic component of the flow is stronger. In both zones, the OSSE follows the same tracks, observing 13243 gridpoints. Number of control parameters for the different models are detailed in~\cref{tab:qg3l-control-vector-size}.
 
 \begin{table}[h]
-    \centering
-    \begin{tabular}{lcccc}
-          & RG-SI & RG-SI ($\alpha = 0$) & RG-F & RG0 \\
-        \hline
-        Control vector size &  6322 & 6321 & 8512 & 0 \\
-        \hline
-    \end{tabular}
+    \begin{center}
+        \begin{tabular}{lcccc}
+            & RG-SI & RG-SI ($\alpha = 0$) & RG-F & RG0 \\
+            \savehline
+            Control vector size &  6322 & 6321 & 8512 & 0 \\
+            \savehline \\
+        \end{tabular}
+    \end{center}
     \caption{Comparison of the control vector size for the different models in the QG3L experiment.}\label{tab:qg3l-control-vector-size}
 \end{table}
 
@@ -367,27 +361,28 @@ Z1 is at the core of the eastward jet and presents a surface intensified dynamic
 Both the reference and the models (RG-SI, RG-F, RG0) were configured with the same time and space resolutions. Regarding stratification parameters, RG0 has been implemented as a one-layer QG model with $g = g_1 g_2/(g_1+g_2)$ so that it matches the parameters of a truncation of the multilayer equations (see~\cref{def:pv-rg}). RG-SI and RG-F have been instantiated so that they share the same deformation radius, namely $\qty{29}{\kilo\meter}$, which corresponds to the baroclinic deformation radius of the two-layer QG model matching the parameters of the reference three-layer QG on the top two-layers. Such value is coherent with typical values of baroclinic deformation radius at mid-latitudes~\cite{chelton1998}. All model parameters are detailed in~\cref{tab:qg3l-model-parameters}.
 
 \begin{table}[h]
-    \centering
-    \begin{tabular}{lcccc}
-        \hline
-        $\dt$ & \multicolumn{4}{c}{$\qty{7200}{\second}$} \\
-        $\dx$ & \multicolumn{4}{c}{$\qty{10}{\kilo\meter}$} \\
-        $\dy$ & \multicolumn{4}{c}{$\qty{10}{\kilo\meter}$} \\
-        $f_0$ & \multicolumn{4}{c}{$\qty{9.375e-5}{\per\second}$} \\
-        $\beta$ & \multicolumn{4}{c}{$\qty{1.754e-11}{\per\meter\per\second}$} \\
-        \midrule
-         & QG3L & RG-SI & RG-F & RG0 \\
-        \midrule
-        $H_1$ & $\qty{400}{\meter}$ & $\qty{400}{\meter}$ & $\qty{293}{\meter}$ & $\qty{400}{\meter}$ \\
-        $H_2$ & $\qty{1100}{\meter}$ & $\qty{1100}{\meter}$ &  &  \\
-        $H_3$ & $\qty{2600}{\meter}$ &  &  &  \\
-        $g_1$ & $\qty{9.81}{\meter\per\second^2}$ & $\qty{9.81}{\meter\per\second^2}$ & $\qty{0.025}{\meter\per\second^2}$ & $\qty{0.0249}{\meter\per\second^2}$ \\
-        $g_2$ & $\qty{0.025}{\meter\per\second^2}$ & $\qty{0.025}{\meter\per\second^2}$ &  &  \\
-        $g_3$ & $\qty{0.0125}{\meter\per\second^2}$ &  &  &  \\
-        \midrule
-        $R_d$ & $\qty{41}{\kilo\meter}$ & $\qty{29}{\kilo\meter}$ & $\qty{29}{\kilo\meter}$ & $\qty{34}{\kilo\meter}$ \\
-        \hline
-    \end{tabular}
+    \begin{center}
+        \begin{tabular}{lcccc}
+            \savehline
+            $\dt$ & \multicolumn{4}{c}{$\qty{7200}{\second}$} \\
+            $\dx$ & \multicolumn{4}{c}{$\qty{10}{\kilo\meter}$} \\
+            $\dy$ & \multicolumn{4}{c}{$\qty{10}{\kilo\meter}$} \\
+            $f_0$ & \multicolumn{4}{c}{$\qty{9.375e-5}{\per\second}$} \\
+            $\beta$ & \multicolumn{4}{c}{$\qty{1.754e-11}{\per\meter\per\second}$} \\
+            \savehline
+            & QG3L & RG-SI & RG-F & RG0 \\
+            \savehline
+            $H_1$ & $\qty{400}{\meter}$ & $\qty{400}{\meter}$ & $\qty{293}{\meter}$ & $\qty{400}{\meter}$ \\
+            $H_2$ & $\qty{1100}{\meter}$ & $\qty{1100}{\meter}$ &  &  \\
+            $H_3$ & $\qty{2600}{\meter}$ &  &  &  \\
+            $g_1$ & $\qty{9.81}{\meter\per\second^2}$ & $\qty{9.81}{\meter\per\second^2}$ & $\qty{0.025}{\meter\per\second^2}$ & $\qty{0.0249}{\meter\per\second^2}$ \\
+            $g_2$ & $\qty{0.025}{\meter\per\second^2}$ & $\qty{0.025}{\meter\per\second^2}$ &  &  \\
+            $g_3$ & $\qty{0.0125}{\meter\per\second^2}$ &  &  &  \\
+            \savehline
+            $R_d$ & $\qty{41}{\kilo\meter}$ & $\qty{29}{\kilo\meter}$ & $\qty{29}{\kilo\meter}$ & $\qty{34}{\kilo\meter}$ \\
+            \savehline \\
+        \end{tabular}
+    \end{center}
     \caption{Model parameters. $R_d$ denotes the first baroclinic deformation radius.}\label{tab:qg3l-model-parameters}
 \end{table}
 
@@ -421,18 +416,19 @@ Performances were assessed over 12 20-days periods, each separated by 20 days. F
 The RG-SI method is able to reconstruct the surface stream function with high fidelity (averaged nRMSE on Z1 is about 0.029 and about 0.016 on Z2 as detailed in~\cref{tab:qg3l-nrmses}) along with its gradient (providing the velocity). The introduction of the regularization, not only allows the variational problem to be well constrained, but also halves the average nRMSE over both zones. Looking at the velocity errors, especially in Z2, it also clearly improves the reconstruction of the stream function gradient. In all four panels we also see that the regularization flattens the nRMSE, suggesting that it helps to constrain the model when observations are sparse.
 
 \begin{table}[h]
-    \centering
+    \begin{center}
         \begin{tabular}{clccccc}
             & & RG-SI & RG-SI ($\gamma = 0$) & RG-F & RG0 & RG-Proj\\
-        \hline
-            \multirow{2}{*}{nRMSE} &\multicolumn{1}{l}{Z1} & 0.029 & 0.060 & 0.15 & 0.38 & 0.041 \\
-            &\multicolumn{1}{l}{Z2} & 0.016 & 0.040 & 0.13 & 0.38 & 0.012\\
-        \addlinespace
-            \multirow{2}{*}{$\mathrm{nRMSE}_{\mathrm{vel}}$} & \multicolumn{1}{l}{Z1} & 0.094 & 0.18 & 0.41 & 0.71 & 0.14 \\
-            & \multicolumn{1}{l}{Z2} & 0.061 & 0.22 & 0.71 & 1.24 & 0.044\\
-        \hline
-    \end{tabular}
-\caption{Averaged nRMSE values.}\label{tab:qg3l-nrmses}
+            \savehline
+                \multirow{2}{*}{nRMSE} &\multicolumn{1}{l}{Z1} & 0.029 & 0.060 & 0.15 & 0.38 & 0.041 \\
+                &\multicolumn{1}{l}{Z2} & 0.016 & 0.040 & 0.13 & 0.38 & 0.012\\
+            % \addlinespace
+                \multirow{2}{*}{$\mathrm{nRMSE}_{\mathrm{vel}}$} & \multicolumn{1}{l}{Z1} & 0.094 & 0.18 & 0.41 & 0.71 & 0.14 \\
+                & \multicolumn{1}{l}{Z2} & 0.061 & 0.22 & 0.71 & 1.24 & 0.044\\
+            \savehline \\
+        \end{tabular}
+    \end{center}
+    \caption{Averaged nRMSE values.}\label{tab:qg3l-nrmses}
 \end{table}
 
 Comparison with other methods shows that RG-SI outperforms both RG0 and RG-F.
@@ -467,17 +463,19 @@ Although results show that the regularization improves the reconstruction of $\s
 To assess the relevancy of the deformation radius correction presented in~\cref{sec:deformation-radius-correction}, we keep the same parameters for the three-layer QG reference model, and we modify the other models' ones. Stratification perturbation is prescribed by modifying the layer reference thickness of the models. New parameters and the resulting deformation radius are detailed in~\cref{tab:qg3l-modified-model-parameters}.
 
 \begin{table}[h]
-    \centering
-    \begin{tabular}{lcccc}
-        & QG3L & RG-SI & RG-F & RG0 \\
-        \hline
-        $H_1$ & $\qty{400}{\meter}$ & $\qty{150}{\meter}$ & $\qty{135}{\meter}$ & $\qty{150}{\meter}$ \\
-        $H_2$ & $\qty{1100}{\meter}$ & $\qty{1350}{\meter}$ &  &  \\
-        $H_3$ & $\qty{2600}{\meter}$ &  &  &  \\
-        \midrule
-        $R_d$ & $\qty{41}{\kilo\meter}$ & $\qty{19}{\kilo\meter}$ & $\qty{19}{\kilo\meter}$ & $\qty{21}{\kilo\meter}$ \\
-        \hline
-    \end{tabular}
+    \begin{center}
+        \begin{tabular}{lcccc}
+            & QG3L & RG-SI & RG-F & RG0 \\
+            \savehline
+            $H_1$ & $\qty{400}{\meter}$ & $\qty{150}{\meter}$ & $\qty{135}{\meter}$ & $\qty{150}{\meter}$ \\
+            $H_2$ & $\qty{1100}{\meter}$ & $\qty{1350}{\meter}$ &  &  \\
+            $H_3$ & $\qty{2600}{\meter}$ &  &  &  \\
+            % \midrule
+            \savehline
+            $R_d$ & $\qty{41}{\kilo\meter}$ & $\qty{19}{\kilo\meter}$ & $\qty{19}{\kilo\meter}$ & $\qty{21}{\kilo\meter}$ \\
+            \savehline \\
+        \end{tabular}
+    \end{center}
     \caption{Model parameters in the perturbed framework. Other model parameters were retained as shown in~\cref{tab:qg3l-model-parameters}.}\label{tab:qg3l-modified-model-parameters}
 \end{table}
 
@@ -493,15 +491,16 @@ We then conducted the same experiment as before and monitored the ability of the
 Here again, RG-SI accurately reconstructs the surface flow dynamics. The comparison of error scores of the standard RG-SI model and its counterpart with fixed $\alpha = 0$ shows that the introduction of a single additional parameter into the control vector results in an error reduction of more than 2 (see~\cref{tab:qg3l-pert-nrmses}). $\mathrm{nRMSE}_{\mathrm{vel}}$ scores are not displayed as they do not provide further information to the nRMSE profiles.
 
 \begin{table}[h]
-    \centering
+    \begin{center}
         \begin{tabular}{clcccc}
             & & RG-SI & RG-SI ($\alpha = 0$) & RG-F & RG0 \\
-        \hline
+            \savehline
             \multirow{2}{*}{nRMSE} & Z1 & 0.034 & 0.072 & 0.22 & 0.40 \\
-                                   & Z2 & 0.011 & 0.027 & 0.14 & 0.41 \\
-        \hline
-    \end{tabular}
-\caption{Averaged nRMSE values.}\label{tab:qg3l-pert-nrmses}
+                                & Z2 & 0.011 & 0.027 & 0.14 & 0.41 \\
+            \savehline \\
+        \end{tabular}
+    \end{center}
+    \caption{Averaged nRMSE values.}\label{tab:qg3l-pert-nrmses}
 \end{table}
 
 Relative comparison with the error scores from~\cref{tab:qg3l-nrmses} shows that, overall, RG-SI still performs worse in Z1 in the perturbed framework (absolute error difference is 0.005) and, surprisingly performs better in Z2 (reduction of error by 0.005). We reckon that this difference can be explained by the fact that the dynamics in Z2 is much more barotropic than it is in Z1. Therefore, the model performances in Z2 are not as impacted by the baroclinic radius perturbation as they are in Z1.
@@ -519,13 +518,14 @@ where $\rho_0$ is the reference density for water. Additional experiments were c
 
 As the resulting stream function contain small-scale features, it is then smoothed using a Gaussian filter and then downsampled from the high-resolution, curvilinear coordinates of the eNATL60 simulation into the regular, Cartesian grid of the QG models. It is this smoothed, down-scaled field that is used for both initial and boundary conditions of the QG models. The observations are sampled from the non-filtered surface stream function field, using the same OSSE as for the three-layer QG comparison. A total of 10333 pixels are observed during a single assimilation cycle. Control vectors sizes are given in~\cref{tab:enatl60-control-vector-size}.
 \begin{table}[h]
-    \centering
-    \begin{tabular}{lccc}
-          & RG-SI & RG-F & RG0 \\
-        \hline
-        Control vector size & 5475 & 6608 & 0 \\
-        \hline
-    \end{tabular}
+    \begin{center}
+        \begin{tabular}{lccc}
+            & RG-SI & RG-F & RG0 \\
+            \savehline
+            Control vector size & 5475 & 6608 & 0 \\
+            \savehline \\
+        \end{tabular}
+    \end{center}
     \caption{Comparison of the control vector size for the different models in the eNATL60 experiment.}\label{tab:enatl60-control-vector-size}
 \end{table}
 Once again variational assimilation is conducted over 20-days periods and the quality of the reconstruction is assessed using stream function and velocity nRMSEs to compare reference fields to their reconstructed counterparts. Assimilation is conducted over 4 consecutive periods, during two different seasons, summer (July, August, September) and winter (January, February, March). Results are shown in~\cref{fig:enatl60-nrmse}. Velocity nRMSE is evaluated using surface zonal and meridional velocities from eNATL60 simulation as references.
@@ -537,18 +537,19 @@ Once again variational assimilation is conducted over 20-days periods and the qu
 \end{figure}
 Despite the complexity of the realistic flow, RG-SI is still able to reconstruct surface dynamics with precision. The stream function nRMSE averages at 0.13 (resp. 0.11) for summer (resp.\ winter), demonstrating the ability of the model in reconstructing surface stream function. Regarding velocity, nRMSE scores remain significant (see~\cref{tab:enatl60-nrmses}). Indeed, initial velocity retrieved from initial condition already conveys a significant error (around 0.2-0.25), reflecting the limitation of our method in emulating ageostrophic components or small-scale patterns of the surface flow that cannot be captured because of the horizontal resolution of the models.
 \begin{table}[h]
-    \centering
+    \begin{center}
         \begin{tabular}{clccc}
             & & RG-SI & RG-F & RG0 \\
-        \hline
-            \multirow{2}{*}{nRMSE} & Summer & 0.13 & 0.19 & 0.46 \\
-            & Winter & 0.11 & 0.15 & 0.35 \\
-        \addlinespace
-            \multirow{2}{*}{$\mathrm{nRMSE}_{\mathrm{vel}}$} &  Summer & 0.41 & 0.51 & 0.87 \\
-            &  Winter & 0.43 & 0.49 & 0.74  \\
-        \hline
-    \end{tabular}
-\caption{Averaged nRMSE values.}\label{tab:enatl60-nrmses}
+            \savehline
+                \multirow{2}{*}{nRMSE} & Summer & 0.13 & 0.19 & 0.46 \\
+                & Winter & 0.11 & 0.15 & 0.35 \\
+            % \addlinespace
+                \multirow{2}{*}{$\mathrm{nRMSE}_{\mathrm{vel}}$} &  Summer & 0.41 & 0.51 & 0.87 \\
+                &  Winter & 0.43 & 0.49 & 0.74  \\
+            \savehline \\
+        \end{tabular}
+    \end{center}
+    \caption{Averaged nRMSE values.}\label{tab:enatl60-nrmses}
 \end{table}
 Such results indicate that a great component of the error conducted by the RG model can be explained by a field advected by geostrophic flow (whether only the sublayer geostrophic stream function or a more complex field). Regardless of the season (summer or winter), RG-SI provides an improvement over the RG-F method and significantly decreases the error that was conducted by the RG0 model.
 
