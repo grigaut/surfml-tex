@@ -313,10 +313,10 @@ We retrieved ideal initial condition (IC) and boundary conditions (BC) from the 
 In both experiments, observations are drawn from the surface using an OSSE that simulates SWOT-like sampling tracks. Satellite track example can be found in~\cref{fig:satellite-track}, along with the cumulative passages of the tracks over a 20-days period.
 
 \begin{figure}[h]
-    \begin{center}f
+    \begin{center}
         \includegraphics[width=0.95\textwidth]{satellite_track.pdf}
     \end{center}
-    \caption{Example of simulated satellite track over the surface (Surface fields extracted from a QG3L double-gyre simulation). Last panel shows how many times has a pixel been observed over the 20-days period.}\label{fig:satellite-track}
+    \caption{Example of simulated satellite track over the surface (surface fields extracted from a QG3L double-gyre simulation). Last panel shows how many times has a pixel been observed over the 20-days period.}\label{fig:satellite-track}
 \end{figure}
 
 Assimilation is conducted on 20 days-long periods. Over these periods, satellite passages are simulated and, when a track spans over the considered domain, observation loss is evaluated using the collected data. Regarding the RG-SI model, regularization cost function is computed at every time step. Details on the implementation of the RG-F forcing and regularization are given in~\ref{appendix:rg-f-implementation}.
