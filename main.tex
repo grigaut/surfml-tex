@@ -46,23 +46,21 @@
 
 % Corresponding author. Do not prepend with ``SI Corresponding author: '' in published version.
 \authoraddr{%
-                      % e.g., their full name, their department, their academic institution, their building, their City, State, Zip, Country. (theiremail\@ their institution)
-                      Gaétan Rigaut, gaetan.rigaut@inria.fr
-                   }
+    % e.g., their full name, their department, their academic institution, their building, their City, State, Zip, Country. (theiremail\@ their institution)
+    Gaétan Rigaut, gaetan.rigaut@inria.fr
+}
 
 
 
 \authorrunninghead{Ignored.} % Ignored.
 
 % Key points.  
-%   Takes three arguments.  Remember to specifiy them all, using {} for no item.
+%   Takes three arguments.  Remember to specify them all, using {} for no item.
 %
 \keypoints%
-% {}{}{}
-%    % First key point, etc.
-    {Enhancing reduced-gravity model reconstruction in the context of data assimilation using a theory-motivated model error parameterization}{Introducing a physics-derived regularization term for the cost function to enforce multilayer QG dynamics}{Improving the robustness of the model by introducing a deformation radius correcting parameter in the control vector}
-%    {Summarize the main points and conclusions of the article}
-%    {Each must be 140 characters or fewer with no special characters or punctuation and must be complete sentences}
+    {Enhancing reduced-gravity model reconstruction in the context of data assimilation using a theory-motivated model error parameterization}
+    {Introducing a physics-derived regularization term for the cost function to enforce multilayer QG dynamics}
+    {Improving the robustness of the model by introducing a deformation radius correcting parameter in the control vector}
 
 % Call after \authors.
 
@@ -73,31 +71,20 @@
 
 \maketitle
 
-
-% Two options for abstracts: one with an abstract only and one with a plain language summary included.
-%
-%\begin{abstract}
-%    Abstract text body.
-%\end{abstract}
-
-
-\bigskip  % Remove; for demo purposes only.
-% OR:
-
 \begin{abstract}
     Ocean surface reconstruction through variational assimilation (VA) of partial, satellite-acquired observations is often performed using reduced-order models. 
     The quasi-geostrophic reduced-gravity (RG) framework, a truncation of the multilayer quasi-geostrophic equations, has shown promising reconstructing capabilities.
-    In order to address model errors, a state-of-the-art reconstruction method includes an external forcing in the advection equations of the RG model and optimizes this forcing term during the VA procedure.
+    In order to address model errors, a state-of-the-art reconstruction method includes an external forcing in the advection equations of the RG model and optimizes this term during the VA procedure.
     In this paper, we show that the RG advection equation can be corrected to account specifically for the truncation error by inferring the material derivative of the subsurface stream function, which can be parameterized and optimized using VA.
     Since this method yields a proxy for the subsurface stream function, we can compute an approximation of the subsurface potential vorticity and an estimation of its conservation.
     We use this approximated conservation as a physics-based regularization term for the VA cost function, replacing the usual background regularization.
     We also introduce a single additional control parameter for deformation radius correction, allowing the model to mitigate incorrect stratification parameters.
-    Method validation is performed using two different reference datasets, a three-layer quasi-geostrophic double-gyre simulation and the eNATL60 simulation, both with observations retrieved by an OSSE along SWOT-like tracks.
+    Validation is performed using two different reference datasets, a three-layer quasi-geostrophic double-gyre simulation and the eNATL60 simulation, both with observations retrieved by an OSSE along SWOT-like tracks.
     Results show a reduction of normalized RMSE by 0.12 and 0.05 on surface stream function reconstruction error in each experiment (respectively) when compared to a RG model corrected by an external forcing.
     This study emphasizes the benefits of acknowledging simplification assumptions to design theory-informed error parameterizations to further refine reconstruction capabilities of reduced-order models.
     %
      \begin{plainlanguagesummary}
-            Knowing the ocean surface state is essential for many applications, among which tracking marine currents or predicting weather patterns. While satellites provide the vast majority of measurements of the ocean, they only capture surface fields, and do not ensure global coverage at all time. To fill the gaps, observations are integrated into numerical simulations that are usually performed using simplified models of ocean dynamics. State-of-the-art reconstruction methods are built upon the reduced-gravity quasi-geostrophic model, which is a simplification of a more extensive framework, the multilayer quasi-geostrophic system. The simplification is made by considering all the deep ocean flow to be at rest. In this study we bridge the gap between the two frameworks by introducing a method that infers the subsurface flow in order to better emulate surface dynamics. When tested against numerical simulations, our method shows a significant reduction of the reconstruction error, both when assessed in a simplified setting and a high-resolution realistic setting (error reduced by 0.12 and 0.05, respectively). These results demonstrate the importance of using theoretical knowledge of the ocean dynamics to help reconstruction models account for their inherent sources of error.
+        Knowing the ocean surface state is essential for many applications, among which tracking marine currents or predicting weather patterns. While satellites provide the vast majority of measurements of the ocean, they only capture surface fields, and do not ensure global coverage at all time. To fill the gaps, observations are integrated into numerical simulations that are usually performed using simplified models of ocean dynamics. State-of-the-art reconstruction methods are built upon the reduced-gravity quasi-geostrophic model, which is a simplification of a more extensive framework, the multilayer quasi-geostrophic system. The simplification is made by considering all the deep ocean flow to be at rest. In this study we bridge the gap between the two frameworks by introducing a method that infers the subsurface flow in order to better emulate surface dynamics. When tested against numerical simulations, our method shows a significant reduction of the reconstruction error, both when assessed in a simplified setting and a high-resolution realistic setting (error reduced by 0.12 and 0.05, respectively). These results demonstrate the importance of using theoretical knowledge of the ocean dynamics to help reconstruction models account for their inherent sources of error.
      \end{plainlanguagesummary}
      %
      % Do not put more abstract text body here!
