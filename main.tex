@@ -19,7 +19,6 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{mwe}
-\usepackage{svg}
 \usepackage{multirow}
 \usepackage{booktabs}
 
@@ -327,8 +326,8 @@ We retrieved ideal initial condition (IC) and boundary conditions (BC) from the 
 In both experiments, observations are drawn from the surface using an OSSE that simulates SWOT-like sampling tracks. Satellite track example can be found in~\cref{fig:satellite-track}, along with the cumulative passages of the tracks over a 20-days period.
 
 \begin{figure}[h]
-    \begin{center}
-        \includesvg[width=0.95\textwidth]{assets/images/satellite_track.svg}
+    \begin{center}f
+        \includegraphics[width=0.95\textwidth]{satellite_track.pdf}
     \end{center}
     \caption{Example of simulated satellite track over the surface (Surface fields extracted from a QG3L double-gyre simulation). Last panel shows how many times has a pixel been observed over the 20-days period.}\label{fig:satellite-track}
 \end{figure}
@@ -357,7 +356,7 @@ In the following the reference surface fields are established using a three-laye
 \begin{figure}[h]
     \centering
     \begin{center}
-        \includesvg[width=0.7\textwidth]{assets/images/zones.svg}
+        \includegraphics[width=0.7\textwidth]{zones.pdf}
     \end{center}
     \caption{Detail of the 4 zones of the three-layer QG experiment.}
 \end{figure}
@@ -427,7 +426,7 @@ Performances were assessed over 12 20-days periods, each separated by 20 days. F
 
 \begin{figure}[h]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_all_rmses.svg}
+        \includegraphics[width=\textwidth]{qg3l_all_rmses.pdf}
     \end{center}
     \caption{nRMSE on three-layer QG surface stream function (top row) and velocities (bottom row), averaged over 12 20-days periods, each separated by 20 days, on Z1 (left) and Z2 (right). Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG0, brown for RG-F and blue for RG-SI. The dashed line represents non-regularized RG-SI (hence $\gamma = 0$ in~\cref{def:RG-SI-reg}). Y-axis is shared in each row.}\label{fig:qg3L-nrmses}
 \end{figure}
@@ -457,7 +456,7 @@ The visual comparison of vorticity fields shows almost identical fields. An exam
 
 \begin{figure}[h]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_vorticity_all_32_96_256_384.svg}
+        \includegraphics[width=\textwidth]{qg3l_vorticity_all_32_96_256_384.pdf}
     \end{center}
     \caption{Surface vorticity fields retrieved from the first assimilation cycle performed in Z1, after variational minimization has been completed. The first column displays reference vorticity field while second, third, fourth and fifth show RG-SI, non-regularized RG-SI, RG-F and RG0 reconstructions, respectively. Top row displays vorticity fields after 5 days and bottom one after 20 days.}\label{fig:qg3L-vorticity}
 \end{figure}
@@ -470,7 +469,7 @@ A careful comparison of regularized (second column) and non-regularized (third c
 As the RG-SI method provides an estimation for the sublayer flow, $\sf_2$, we have evaluated the reconstruction of $\sf_2$ by $\tilde{\sf}_2$. Given the reference sublayer stream function from the three-layer QG simulation, nRMSE is evaluated for $\tilde{\sf}_2$. Averages and standard deviation are computed over the variational assimilation periods as for the surface stream function.
 \begin{figure}[h]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_psi2_rmses.svg}
+        \includegraphics[width=\textwidth]{qg3l_psi2_rmses.pdf}
     \end{center}
     \caption{nRMSE on three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days) on Z1 (left) and Z2 (right). RG-SI model is identified by the solid blue line and non-regularized RG-SI by the dashed blue line. Y-axis is shared by both panels.}\label{fig:qg3L-psi2-rmse}
 \end{figure}
@@ -499,7 +498,7 @@ We then conducted the same experiment as before and monitored the ability of the
 
 \begin{figure}[h]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_pert_rmses.svg}
+        \includegraphics[width=\textwidth]{qg3l_pert_rmses.pdf}
     \end{center}
     \caption{nRMSE on three-layer QG surface stream function (averaged over 12 different assimilation periods each of 20 days) on Z1 (left) and Z2 (right) using perturbed models. Lines represent the nRMSE average and the shaded area the standard deviation. Models are identified by the line color, black for RG0, brown for RG-F and dark blue for RG-SI. A light blue line is used for the RG-SI model with $\alpha=0$ (hence no deformation radius correction).}
 \end{figure}
@@ -545,7 +544,7 @@ As the resulting stream function contain small-scale features, it is then smooth
 Once again variational assimilation is conducted over 20-days periods and the quality of the reconstruction is assessed using stream function and velocity nRMSEs to compare reference fields to their reconstructed counterparts. Assimilation is conducted over 4 consecutive periods, during two different seasons, summer (July, August, September) and winter (January, February, March). Results are shown in~\cref{fig:enatl60-nrmse}. Velocity nRMSE is evaluated using surface zonal and meridional velocities from eNATL60 simulation as references.
 \begin{figure}[h]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/enatl60_all_rmses.svg}
+        \includegraphics[width=\textwidth]{enatl60_all_rmses.pdf}
     \end{center}
     \caption{nRMSE on eNATL60 surface stream function (top row) and velocities (bottom row), averaged over 4 consecutive 20-days periods. Summer is displayed in the left column and winter in the right one. Models are identified by the line color, black for RG0, brown for RG-F and blue for RG-SI. Solid line represents the averaged over the 4 periods and the shaded area the empirical standard deviation. Y-axis is shared in each row.}\label{fig:enatl60-nrmse}
 \end{figure}
@@ -569,7 +568,7 @@ Such results indicate that a great component of the error conducted by the RG mo
 The visual comparison of the surface vorticity field demonstrates the ability of the RG-SI method in reconstructing a realistic flow. An example of the vorticity fields is shown in~\cref{fig:enatl60-vorticity}. The overall comparison of the models show that RG-SI is able to reconstruct larger vortices, although its resolution prevents it from representing smaller ones. RG-SI also seems to outperform the other models in locating the larger vortices.
 \begin{figure}[h]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/enatl60_vorticity_summer.svg}
+        \includegraphics[width=\textwidth]{enatl60_vorticity_summer.pdf}
     \end{center}
     \caption{Surface vorticity fields retrieved from first assimilation cycle performed in summer, after variational minimization has been completed. First column displays reference vorticity field while second, third and fourth show RG-SI, RG-F and RG0 reconstructions, respectively. Top row displays vorticity field after 5 days and bottom one after 20 days.}\label{fig:enatl60-vorticity}
 \end{figure}
@@ -645,14 +644,14 @@ Indeed, since small scales (large $k_i$) are expected to carry less energy, we i
 
 \begin{figure}[h]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_all_rmses_.svg}
+        \includegraphics[width=\textwidth]{qg3l_all_rmses_.pdf}
     \end{center}
     \caption{nRMSE on surface stream function (top row) and velocities (bottom row), averaged over 12 20-days periods, each separated by 20 days, on Z1 (left) and Z2 (right). Standard RG-SI model is identified by the solid blue line, RG-SI with coefficient obtained through the projection of $\sf_2$ (from the reference three-layer QG model) onto the reduced order space is shown by the green line and RG-F by the brown one. Y-axis is shared by both panels.}\label{fig:qg3L-proj-rmses}
 \end{figure}
 
 \begin{figure}[h]
     \begin{center}
-        \includesvg[width=\textwidth]{assets/images/qg3l_Dt_psi2_rmses.svg}
+        \includegraphics[width=\textwidth]{qg3l_Dt_psi2_rmses.pdf}
     \end{center}
     \caption{nRMSE on material derivative of three-layer QG sublayer stream function (averaged over 12 20-days periods, each separated by 20 days) on Z1 (left) and Z2 (right). Standard RG-SI model is identified by the solid blue line whereas RG-SI with coefficient obtained through the projection of $\sf_2$ (from the reference three-layer QG model) onto the reduced order space is shown by the green line. Y-axis is shared by both panels.}\label{fig:qg3L-Dtpsi2-rmse}
 \end{figure}
