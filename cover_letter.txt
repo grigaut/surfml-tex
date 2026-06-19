@@ -1,0 +1,14 @@
+Dear editors,
+
+We hereby submit our manuscript "Accounting for truncation error in reduced-gravity models: a subsurface-aware model for enhanced ocean surface reconstruction" 
+for publication in Journal of Advances in Modeling Earth Systems.
+
+This paper introduces a theory-derived model error parameterization for ocean surface reconstruction through reduced-order modeling. Indeed, as ocean surface data is mostly acquired by satellites that only provide partial observations, reconstruction methods are required to fill in the gaps between observations. To further reduce reconstruction error using numerical solutions, state-of-the-art methods are performing variational assimilation with numerical models built upon the quasi-geostrophic reduced-gravity framework. As these simplified models contain inherent sources of error, these methods introduce an infinitesimal external forcing term in the advection equation, and rely on variational assimilation to optimize such term.
+
+In this work, we bridge the gap between the multilayer quasi-geostrophic framework and its reduced-gravity counterpart through the parameterization of the subsurface field in the advection equation. Variational assimilation is then performed to infer such field while its material derivative is used to correct the advection equation. In this framework we can also compute a proxy for the subsurface potential vorticity, along with a diagnostic evaluation of its conservation. The latter is then used as a regularization constraint for the variational procedure to overcome the absence of prior estimation of the subsurface field. Additionally, we define a single parameter to mitigate an eventual incorrect deformation radius. Evaluated on the reconstruction of both an idealized simulation and a realistic high-resolution simulation, this method demonstrates improvements over the state-of-the-art reconstruction method.
+
+We believe that this work offers a new perspective on the benefits of using physics-informed error terms in data assimilation procedures. With the recent launch of the SWOT mission, we also believe that this work could have a notable impact on the development of ocean surface reconstruction methods.
+
+Sincerely,
+
+Gaétan Rigaut, on behalf of the authors
